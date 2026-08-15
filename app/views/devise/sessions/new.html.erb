@@ -1,0 +1,35 @@
+<div class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-sm">
+    <p class="text-center font-display font-black text-2xl tracking-tight mb-1">MENUCITO</p>
+    <p class="text-center text-xs uppercase tracking-widest text-ink/60 mb-6"><%= current_restaurant&.name %></p>
+
+    <div class="nb-box p-6">
+      <h1 class="nb-heading text-xl mb-6">Iniciar sesión</h1>
+
+      <%= render "shared/flashes" %>
+
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name),
+            html: { data: { controller: "validate", action: "submit->validate#submit" } }) do |f| %>
+        <div class="mb-4">
+          <%= f.label :email, "Correo", class: "field-label" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", id: "session_email",
+                class: "field-input", data: { validate_target: "field", validate_rule: "required,email", action: "blur->validate#check" } %>
+          <p class="field-error hidden" data-validate-for="session_email"></p>
+        </div>
+
+        <div class="mb-6">
+          <%= f.label :password, "Contraseña", class: "field-label" %>
+          <%= f.password_field :password, autocomplete: "current-password", id: "session_password",
+                class: "field-input", data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+          <p class="field-error hidden" data-validate-for="session_password"></p>
+        </div>
+
+        <%= f.submit "Entrar", class: "btn-primary w-full" %>
+      <% end %>
+
+      <div class="mt-4 text-center">
+        <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name), class: "text-xs underline text-ink/60" %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<h1 class="nb-heading text-2xl mb-6">Abrir caja</h1>
+
+<%= form_with model: @cash_session, url: cash_sessions_path, class: "nb-box p-6 max-w-md",
+      data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+  <%= render "shared/error_messages", resource: @cash_session %>
+
+  <div class="mb-6">
+    <%= f.label :opening_amount, "Monto inicial en caja", class: "field-label" %>
+    <%= f.number_field :opening_amount, id: "cash_session_opening_amount", step: "0.01", min: 0, value: 0, class: "field-input",
+          data: { validate_target: "field", validate_rule: "required,number,min:0", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="cash_session_opening_amount"></p>
+    <p class="field-hint">Cuenta el efectivo físico antes de empezar a vender.</p>
+  </div>
+
+  <%= f.submit "Abrir caja", class: "btn-primary w-full" %>
+<% end %>

@@ -1,0 +1,17 @@
+<div class="max-w-sm mx-auto text-center">
+  <h1 class="nb-heading text-2xl mb-1">Carta QR — Mesa <%= @dining_table.code %></h1>
+  <p class="text-sm text-ink/60 mb-6">Imprime y coloca en la mesa.</p>
+
+  <div class="nb-box p-6 inline-block bg-white">
+    <%= raw RQRCode::QRCode.new(@menu_url).as_svg(
+          offset: 0, color: "000", shape_rendering: "crispEdges",
+          module_size: 6, standalone: true, use_path: true
+        ) %>
+    <p class="font-mono text-xs mt-3 break-all"><%= @menu_url %></p>
+  </div>
+
+  <div class="flex gap-3 justify-center mt-6">
+    <%= link_to "Volver", dining_tables_path, class: "btn-secondary text-xs" %>
+    <button type="button" onclick="window.print()" class="btn-primary text-xs">Imprimir</button>
+  </div>
+</div>

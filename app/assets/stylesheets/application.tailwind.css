@@ -1,1 +1,130 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", "Arial Black", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-ink: #0a0a0a;
+  --color-paper: #fdfbf3;
+  --color-paper-dim: #f2efe2;
+  --color-yellow: #ffe14d;
+  --color-lime: #c6ff5e;
+  --color-mint: #6df2c1;
+  --color-pink: #ff6fae;
+  --color-red: #ff4d4d;
+  --color-blue: #5ea8ff;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-yellow);
+  }
+}
+
+@layer components {
+  /* Core neo-brutalist surface: thick border + hard offset shadow */
+  .nb-box {
+    @apply bg-white border-4 border-ink rounded-none;
+    box-shadow: 6px 6px 0 0 var(--color-ink);
+  }
+
+  .nb-box-sm {
+    @apply bg-white border-2 border-ink rounded-none;
+    box-shadow: 3px 3px 0 0 var(--color-ink);
+  }
+
+  /* Button hierarchy -------------------------------------------------- */
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border-4 border-ink rounded-none
+           font-display font-bold uppercase tracking-wide px-5 py-3 text-sm
+           transition-transform duration-100 select-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn:active:not(:disabled),
+  .btn-primary:active:not(:disabled),
+  .btn-secondary:active:not(:disabled),
+  .btn-danger:active:not(:disabled),
+  .btn-ghost:active:not(:disabled) {
+    transform: translate(3px, 3px);
+  }
+
+  /* Primary: solid fill, big shadow — the ONE dominant action per view */
+  .btn-primary {
+    @apply bg-ink text-yellow;
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .btn-primary:hover:not(:disabled) { box-shadow: 2px 2px 0 0 var(--color-ink); }
+  .btn-primary:active:not(:disabled) { box-shadow: 0 0 0 0 var(--color-ink); }
+
+  /* Secondary: outline only, no shadow — always visually subordinate */
+  .btn-secondary {
+    @apply bg-white text-ink;
+    box-shadow: none;
+  }
+  .btn-secondary:hover:not(:disabled) { @apply bg-paper-dim; }
+
+  /* Destructive: red fill, requires confirmation before firing */
+  .btn-danger {
+    @apply bg-red text-white;
+    box-shadow: 5px 5px 0 0 var(--color-ink);
+  }
+  .btn-danger:hover:not(:disabled) { box-shadow: 2px 2px 0 0 var(--color-ink); }
+
+  .btn-ghost {
+    @apply border-transparent bg-transparent text-ink px-3 py-2;
+  }
+
+  /* Form fields --------------------------------------------------------- */
+  .field-label {
+    @apply block font-display font-bold uppercase text-xs tracking-widest mb-1;
+  }
+
+  .field-input {
+    @apply w-full border-4 border-ink rounded-none px-3 py-2 bg-white font-display
+           focus:outline-none focus:ring-0 focus:border-ink;
+  }
+
+  .field-input[data-valid="false"] {
+    @apply border-red bg-red/5;
+  }
+
+  .field-input[data-valid="true"] {
+    @apply border-ink;
+  }
+
+  .field-error {
+    @apply mt-1 inline-block bg-red text-white text-xs font-bold uppercase px-2 py-1 border-2 border-ink;
+  }
+
+  .field-hint {
+    @apply mt-1 text-xs text-ink/60;
+  }
+
+  /* Chips / badges -------------------------------------------------------- */
+  .badge {
+    @apply inline-flex items-center gap-1 border-2 border-ink rounded-none px-2 py-0.5
+           text-xs font-bold uppercase;
+  }
+
+  .badge-yellow { @apply bg-yellow; }
+  .badge-mint { @apply bg-mint; }
+  .badge-pink { @apply bg-pink text-white; }
+  .badge-red { @apply bg-red text-white; }
+  .badge-outline { @apply bg-white; }
+
+  /* Section heading pattern ----------------------------------------------- */
+  .nb-heading {
+    @apply font-display font-black uppercase tracking-tight text-2xl;
+  }
+}

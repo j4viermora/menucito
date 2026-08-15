@@ -1,14 +1,43 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  devise_for :users, skip: [ :registrations ]
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+  root "home#index"
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Public, tenant-scoped, no login required — the QR menu ("Carta QR").
+  get "menu" => "public_menu#show", as: :public_menu
+
+  # Restaurant sign-up flow (creates the tenant + first owner user). Only meant
+  # to be visited without a subdomain (the marketing/root host).
+  resource :signup, only: [ :new, :create ], controller: "signups"
+
+  resources :dining_tables do
+    member { get :qr }
+  end
+
+  resources :menu_categories
+  resources :menu_items
+
+  resources :discounts
+
+  resources :users, except: [ :show ]
+
+  # Ventas por mostrador (counter sales / POS)
+  get "pos" => "pos#index", as: :pos
+  post "pos" => "pos#create"
+
+  resources :orders, only: [ :show, :update ] do
+    member do
+      get :comanda
+      post :send_to_kitchen
+      post :pay
+      post :cancel
+    end
+  end
+
+  resources :cash_sessions, only: [ :new, :create, :show, :index ] do
+    member { patch :close }
+    resources :cash_movements, only: [ :create, :destroy ]
+  end
 end

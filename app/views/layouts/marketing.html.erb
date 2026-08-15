@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= render "shared/head" %>
+  </head>
+
+  <body class="min-h-screen bg-paper text-ink">
+    <header class="border-b-4 border-ink p-4 flex items-center justify-between">
+      <span class="font-display font-black text-xl tracking-tight">MENUCITO</span>
+      <%= link_to "Crear mi restaurante", new_signup_path, class: "btn-primary text-xs" %>
+    </header>
+    <main class="max-w-3xl mx-auto p-6">
+      <%= render "shared/flashes" %>
+      <%= yield %>
+    </main>
+  </body>
+</html>

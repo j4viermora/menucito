@@ -1,0 +1,18 @@
+<%= form_with model: menu_category, class: "nb-box p-6 max-w-md",
+      data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+  <%= render "shared/error_messages", resource: menu_category %>
+
+  <div class="mb-4">
+    <%= f.label :name, "Nombre", class: "field-label" %>
+    <%= f.text_field :name, id: "menu_category_name", class: "field-input",
+          data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="menu_category_name"></p>
+  </div>
+
+  <div class="mb-6 flex items-center gap-2">
+    <%= f.check_box :active, class: "size-5 border-4 border-ink rounded-none" %>
+    <%= f.label :active, "Visible en la carta", class: "field-label mb-0" %>
+  </div>
+
+  <%= f.submit "Guardar categoría", class: "btn-primary w-full" %>
+<% end %>

@@ -1,0 +1,52 @@
+<div class="nb-box p-6 md:p-8">
+  <h1 class="nb-heading text-2xl mb-1">Crea tu restaurante</h1>
+  <p class="text-sm text-ink/60 mb-6">Tendrás tu propio panel en un subdominio exclusivo.</p>
+
+  <%= render "shared/error_messages", resource: @restaurant %>
+  <%= render "shared/error_messages", resource: @user %>
+
+  <%= form_with model: @restaurant, url: signup_path, scope: :restaurant, method: :post,
+        data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+    <div class="mb-4">
+      <%= f.label :name, "Nombre del restaurante", class: "field-label" %>
+      <%= f.text_field :name, id: "restaurant_name", class: "field-input",
+            data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+      <p class="field-error hidden" data-validate-for="restaurant_name"></p>
+    </div>
+
+    <div class="mb-6">
+      <%= f.label :subdomain, "Subdominio", class: "field-label" %>
+      <div class="flex items-stretch">
+        <%= f.text_field :subdomain, id: "restaurant_subdomain", class: "field-input border-r-0",
+              data: { validate_target: "field", validate_rule: "required,minlength:3",
+                       validate_message: "Usa al menos 3 caracteres", action: "blur->validate#check" } %>
+        <span class="border-4 border-ink bg-paper-dim px-3 flex items-center text-sm font-mono">.menucito.app</span>
+      </div>
+      <p class="field-error hidden" data-validate-for="restaurant_subdomain"></p>
+      <p class="field-hint">Solo minúsculas, números y guiones.</p>
+    </div>
+
+    <hr class="border-t-4 border-ink mb-6">
+
+    <div class="mb-4">
+      <%= fields_for :user, @user do |uf| %>
+        <%= uf.label :name, "Tu nombre", class: "field-label" %>
+        <%= uf.text_field :name, id: "user_name", class: "field-input mb-4",
+              data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+        <p class="field-error hidden" data-validate-for="user_name"></p>
+
+        <%= uf.label :email, "Tu correo", class: "field-label" %>
+        <%= uf.email_field :email, id: "user_email", class: "field-input mb-4",
+              data: { validate_target: "field", validate_rule: "required,email", action: "blur->validate#check" } %>
+        <p class="field-error hidden" data-validate-for="user_email"></p>
+
+        <%= uf.label :password, "Contraseña", class: "field-label" %>
+        <%= uf.password_field :password, id: "user_password", class: "field-input",
+              data: { validate_target: "field", validate_rule: "required,minlength:6", action: "blur->validate#check" } %>
+        <p class="field-error hidden" data-validate-for="user_password"></p>
+      <% end %>
+    </div>
+
+    <%= f.submit "Crear restaurante", class: "btn-primary w-full mt-2" %>
+  <% end %>
+</div>

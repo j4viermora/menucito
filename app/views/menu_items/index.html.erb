@@ -1,0 +1,30 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="nb-heading text-2xl">Platos</h1>
+  <%= link_to "Nuevo plato", new_menu_item_path, class: "btn-primary text-xs" %>
+</div>
+
+<% if @menu_items.empty? %>
+  <div class="nb-box p-8 text-center text-ink/60">Aún no tienes platos.</div>
+<% else %>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @menu_items.each do |item| %>
+      <div class="nb-box p-4 flex flex-col">
+        <div class="flex items-start justify-between mb-2">
+          <p class="font-bold"><%= item.name %></p>
+          <span class="badge <%= item.available? ? 'badge-mint' : 'badge-outline' %>">
+            <%= item.available? ? "Disponible" : "Oculto" %>
+          </span>
+        </div>
+        <p class="text-xs text-ink/60 uppercase tracking-widest mb-2"><%= item.menu_category.name %></p>
+        <p class="font-mono font-bold text-lg mb-4"><%= item.formatted_price %></p>
+        <div class="mt-auto flex gap-2">
+          <%= link_to "Editar", edit_menu_item_path(item), class: "btn-secondary text-xs !px-3 !py-2" %>
+          <%= button_to "Eliminar", menu_item_path(item), method: :delete,
+                form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar #{item.name}?",
+                                confirm_message_value: "Esta acción no se puede deshacer." } },
+                class: "btn-secondary text-xs !px-3 !py-2 !text-red !border-red" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

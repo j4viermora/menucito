@@ -1,0 +1,42 @@
+<%= form_with model: menu_item, class: "nb-box p-6 max-w-md",
+      data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+  <%= render "shared/error_messages", resource: menu_item %>
+
+  <div class="mb-4">
+    <%= f.label :name, "Nombre", class: "field-label" %>
+    <%= f.text_field :name, id: "menu_item_name", class: "field-input",
+          data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="menu_item_name"></p>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :description, "Descripción", class: "field-label" %>
+    <%= f.text_area :description, id: "menu_item_description", rows: 3, class: "field-input" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :price, "Precio", class: "field-label" %>
+    <%= f.number_field :price, id: "menu_item_price", step: "0.01", min: 0, class: "field-input",
+          data: { validate_target: "field", validate_rule: "required,number,min:0", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="menu_item_price"></p>
+  </div>
+
+  <div class="mb-4" data-controller="combobox">
+    <%= f.label :menu_category_id, "Categoría", class: "field-label" %>
+    <%= f.collection_select :menu_category_id, current_restaurant.menu_categories.ordered, :id, :name,
+          { prompt: "Selecciona una categoría" },
+          data: { combobox_target: "select" } %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :image, "Foto (opcional)", class: "field-label" %>
+    <%= f.file_field :image, accept: "image/*", class: "field-input" %>
+  </div>
+
+  <div class="mb-6 flex items-center gap-2">
+    <%= f.check_box :available, class: "size-5 border-4 border-ink rounded-none" %>
+    <%= f.label :available, "Disponible para la venta", class: "field-label mb-0" %>
+  </div>
+
+  <%= f.submit "Guardar plato", class: "btn-primary w-full" %>
+<% end %>

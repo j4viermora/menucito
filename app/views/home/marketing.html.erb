@@ -1,0 +1,23 @@
+<section class="text-center py-16">
+  <h1 class="font-display font-black text-5xl md:text-6xl tracking-tight mb-4">
+    GESTIONA TU<br><span class="bg-yellow px-2">RESTAURANTE</span>
+  </h1>
+  <p class="text-lg text-ink/70 max-w-xl mx-auto mb-8">
+    Ventas por mostrador, mesas, caja, comandas, descuentos y carta QR. Todo en un solo lugar.
+  </p>
+  <%= link_to "Crear mi restaurante gratis", new_signup_path, class: "btn-primary text-base" %>
+</section>
+
+<section class="grid sm:grid-cols-2 gap-4 mt-8">
+  <% [
+    ["Ventas por mostrador", "Cobra en segundos con un selector de platos con buscador."],
+    ["Arqueos y caja", "Abre, cierra y controla cada movimiento de efectivo."],
+    ["Comandas", "Imprime pedidos a cocina en un clic."],
+    ["Carta QR", "Tus clientes ven el menú escaneando un código en la mesa."],
+  ].each_with_index do |(title, desc), i| %>
+    <div class="nb-box p-5 <%= [ 'bg-yellow', 'bg-mint', 'bg-pink', 'bg-blue' ][i] %>">
+      <h3 class="font-display font-bold text-lg mb-1"><%= title %></h3>
+      <p class="text-sm"><%= desc %></p>
+    </div>
+  <% end %>
+</section>

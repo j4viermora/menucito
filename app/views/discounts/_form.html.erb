@@ -1,0 +1,36 @@
+<%= form_with model: discount, class: "nb-box p-6 max-w-md",
+      data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+  <%= render "shared/error_messages", resource: discount %>
+
+  <div class="mb-4">
+    <%= f.label :name, "Nombre", class: "field-label" %>
+    <%= f.text_field :name, id: "discount_name", class: "field-input",
+          data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="discount_name"></p>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :kind, "Tipo", class: "field-label" %>
+    <%= f.select :kind, Discount.kinds.keys.map { |k| [ k == "percentage" ? "Porcentaje (%)" : "Monto fijo", k ] }, {}, class: "field-input" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :value, "Valor", class: "field-label" %>
+    <%= f.number_field :value, id: "discount_value", step: "0.01", min: 0, class: "field-input",
+          data: { validate_target: "field", validate_rule: "required,number,min:0.01", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="discount_value"></p>
+    <p class="field-hint">Si es porcentaje, ingresa un número entre 1 y 100.</p>
+  </div>
+
+  <div class="mb-4 flex items-center gap-2">
+    <%= f.check_box :active, class: "size-5 border-4 border-ink rounded-none" %>
+    <%= f.label :active, "Activo", class: "field-label mb-0" %>
+  </div>
+
+  <div class="mb-6 flex items-center gap-2">
+    <%= f.check_box :requires_authorization, class: "size-5 border-4 border-ink rounded-none" %>
+    <%= f.label :requires_authorization, "Requiere autorización de un supervisor", class: "field-label mb-0" %>
+  </div>
+
+  <%= f.submit "Guardar descuento", class: "btn-primary w-full" %>
+<% end %>

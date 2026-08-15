@@ -1,0 +1,61 @@
+<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+  <div>
+    <h1 class="nb-heading text-2xl">Pedido #<%= @order.order_number %></h1>
+    <p class="text-sm text-ink/60">
+      <%= @order.dining_table ? "Mesa #{@order.dining_table.code}" : "Mostrador" %> ·
+      <%= @order.created_at.strftime("%d/%m/%Y %H:%M") %>
+    </p>
+  </div>
+  <span class="badge <%= { "open" => "badge-outline", "sent_to_kitchen" => "badge-yellow", "served" => "badge-mint", "paid" => "badge-mint", "cancelled" => "badge-red" }[@order.status] %>">
+    <%= @order.status.humanize %>
+  </span>
+</div>
+
+<div class="nb-box p-5 mb-6">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b-4 border-ink text-left uppercase text-xs tracking-widest">
+        <th class="pb-2">Plato</th>
+        <th class="pb-2 text-center">Cant.</th>
+        <th class="pb-2 text-right">Precio</th>
+        <th class="pb-2 text-right">Total</th>
+      </tr>
+    </thead>
+    <tbody class="font-mono">
+      <% @order.order_items.each do |item| %>
+        <tr class="border-b-2 border-ink/20">
+          <td class="py-2 font-display"><%= item.menu_item.name %></td>
+          <td class="py-2 text-center"><%= item.quantity %></td>
+          <td class="py-2 text-right"><%= number_to_currency(item.unit_price, unit: current_restaurant.currency + " ", precision: 0) %></td>
+          <td class="py-2 text-right font-bold"><%= number_to_currency(item.line_total, unit: current_restaurant.currency + " ", precision: 0) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mt-4 pt-4 border-t-4 border-ink space-y-1 font-mono text-sm max-w-xs ml-auto">
+    <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+    <% if @order.discount_amount.to_f > 0 %>
+      <div class="flex justify-between"><span>Descuento</span><span>-<%= number_to_currency(@order.discount_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+    <% end %>
+    <div class="flex justify-between font-bold text-lg pt-1 border-t-2 border-ink">
+      <span>Total</span><span><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+    </div>
+  </div>
+</div>
+
+<div class="flex gap-3 flex-wrap">
+  <%= link_to "Imprimir comanda", comanda_order_path(@order), target: "_blank", class: "btn-secondary text-xs" %>
+
+  <% if @order.open? %>
+    <%= button_to "Enviar a cocina", send_to_kitchen_order_path(@order), method: :post, class: "btn-primary text-xs" %>
+  <% end %>
+
+  <% if !@order.paid? && !@order.cancelled? %>
+    <%= button_to "Marcar como pagado", pay_order_path(@order), method: :post, class: "btn-primary text-xs" %>
+    <%= button_to "Cancelar pedido", cancel_order_path(@order), method: :post,
+          form: { data: { controller: "confirm", confirm_title_value: "¿Cancelar este pedido?",
+                          confirm_message_value: "El pedido se marcará como cancelado y no se podrá cobrar." } },
+          class: "btn-secondary text-xs !text-red !border-red" %>
+  <% end %>
+</div>

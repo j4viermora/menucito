@@ -1,0 +1,95 @@
+<h1 class="nb-heading text-2xl mb-6">Ventas por mostrador</h1>
+
+<% unless @cash_session %>
+  <div class="nb-box p-6 mb-6 bg-yellow flex items-center justify-between flex-wrap gap-4">
+    <div>
+      <p class="font-bold">La caja está cerrada</p>
+      <p class="text-sm">Debes abrir la caja antes de registrar ventas.</p>
+    </div>
+    <%= link_to "Abrir caja", new_cash_session_path, class: "btn-primary text-xs" %>
+  </div>
+<% end %>
+
+<div class="grid lg:grid-cols-[1fr_360px] gap-6" data-controller="pos-cart" data-pos-cart-currency-value="<%= current_restaurant.currency %>">
+  <%# Selector de platos %>
+  <div>
+    <div class="relative mb-4">
+      <input type="text" placeholder="Buscar plato por nombre o categoría..."
+        class="field-input"
+        data-pos-cart-target="search" data-action="input->pos-cart#filter"
+        aria-label="Buscar plato">
+    </div>
+
+    <p data-pos-cart-target="empty" class="hidden nb-box-sm p-6 text-center text-ink/60 mb-4">
+      No encontramos platos con ese nombre.
+    </p>
+
+    <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
+      <% @menu_items.each do |item| %>
+        <div class="nb-box-sm p-3 flex flex-col" data-pos-cart-target="card"
+             data-menu-item-id="<%= item.id %>" data-name="<%= item.name %>"
+             data-price="<%= item.price %>" data-category="<%= item.menu_category.name %>">
+          <span class="badge badge-outline w-fit mb-2 text-[10px]"><%= item.menu_category.name %></span>
+          <p class="font-bold text-sm mb-1"><%= item.name %></p>
+          <p class="font-mono font-bold text-base mb-3"><%= item.formatted_price %></p>
+          <button type="button" class="btn-primary text-xs mt-auto w-full !py-2" data-action="pos-cart#add">
+            Agregar
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Carrito / cobro %>
+  <%= form_with url: pos_path, method: :post, class: "nb-box p-5 h-fit lg:sticky lg:top-6" do |f| %>
+    <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3 flex items-center justify-between">
+      Venta actual
+      <button type="button" class="btn-ghost text-[11px] !px-2 !py-1 text-red" data-action="pos-cart#clear">Vaciar</button>
+    </h2>
+
+    <p data-pos-cart-target="cartEmpty" class="text-sm text-ink/60 py-6 text-center">
+      Agrega platos desde la izquierda para iniciar la venta.
+    </p>
+
+    <div data-pos-cart-target="cartList" class="mb-4"></div>
+
+    <% if @discounts.any? %>
+      <div class="mb-4" data-controller="combobox">
+        <label class="field-label">Descuento (opcional)</label>
+        <select name="discount_id" id="discount_id"
+                data-combobox-target="select" data-pos-cart-target="discountSelect"
+                data-action="change->pos-cart#recalcDiscount">
+          <option value="">Sin descuento</option>
+          <% @discounts.each do |discount| %>
+            <option value="<%= discount.id %>" data-kind="<%= discount.kind %>" data-value="<%= discount.value %>">
+              <%= discount.name %> (<%= discount.percentage? ? "#{discount.value.to_i}%" : number_to_currency(discount.value, unit: current_restaurant.currency + " ", precision: 0) %>)
+            </option>
+          <% end %>
+        </select>
+      </div>
+    <% end %>
+
+    <div class="mb-4">
+      <label class="field-label">Método de pago</label>
+      <%= select_tag :payment_method, options_for_select([ [ "Efectivo", "cash" ], [ "Tarjeta", "card" ], [ "Transferencia", "transfer" ] ]), class: "field-input" %>
+    </div>
+
+    <div class="border-t-4 border-ink pt-3 space-y-1 mb-4 font-mono text-sm">
+      <div class="flex justify-between"><span>Subtotal</span><span data-pos-cart-target="subtotal">$ 0</span></div>
+      <div class="flex justify-between hidden" data-pos-cart-target="discountRow">
+        <span>Descuento</span><span data-pos-cart-target="discountAmount">$ 0</span>
+      </div>
+      <div class="flex justify-between font-bold text-lg pt-1 border-t-2 border-ink">
+        <span>Total</span><span data-pos-cart-target="total">$ 0</span>
+      </div>
+    </div>
+
+    <%= hidden_field_tag :cart_items, "", data: { pos_cart_target: "cartItemsField" } %>
+
+    <div data-pos-cart-target="chargeBar">
+      <button type="submit" class="btn-primary w-full" data-pos-cart-target="submit" <%= "disabled" unless @cash_session %>>
+        Cobrar venta
+      </button>
+    </div>
+  <% end %>
+</div>

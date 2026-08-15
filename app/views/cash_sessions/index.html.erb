@@ -1,0 +1,27 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="nb-heading text-2xl">Caja</h1>
+  <% if current_restaurant.current_cash_session %>
+    <%= link_to "Ver caja abierta", cash_session_path(current_restaurant.current_cash_session), class: "btn-primary text-xs" %>
+  <% else %>
+    <%= link_to "Abrir caja", new_cash_session_path, class: "btn-primary text-xs" %>
+  <% end %>
+</div>
+
+<div class="nb-box divide-y-4 divide-ink">
+  <% @cash_sessions.each do |session| %>
+    <%= link_to cash_session_path(session), class: "flex items-center justify-between p-4 hover:bg-paper-dim" do %>
+      <div>
+        <p class="font-bold font-mono"><%= session.opened_at.strftime("%d/%m/%Y %H:%M") %></p>
+        <p class="text-xs text-ink/60">Abierta por <%= session.opened_by.name %></p>
+      </div>
+      <div class="text-right">
+        <span class="badge <%= session.open? ? 'badge-mint' : 'badge-outline' %>"><%= session.open? ? "Abierta" : "Cerrada" %></span>
+        <% if session.closed? %>
+          <p class="text-xs font-mono mt-1 <%= session.difference_amount.to_f.zero? ? 'text-ink/60' : 'text-red font-bold' %>">
+            Dif: <%= number_to_currency(session.difference_amount, unit: current_restaurant.currency + " ", precision: 0) %>
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

@@ -1,0 +1,97 @@
+<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+  <div>
+    <h1 class="nb-heading text-2xl">Caja del <%= @cash_session.opened_at.strftime("%d/%m/%Y") %></h1>
+    <p class="text-sm text-ink/60">Abierta por <%= @cash_session.opened_by.name %> a las <%= @cash_session.opened_at.strftime("%H:%M") %></p>
+  </div>
+  <span class="badge <%= @cash_session.open? ? 'badge-mint' : 'badge-outline' %>"><%= @cash_session.open? ? "Abierta" : "Cerrada" %></span>
+</div>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div>
+    <div class="nb-box p-5 mb-6 font-mono text-sm space-y-1">
+      <div class="flex justify-between"><span>Monto inicial</span><span><%= number_to_currency(@cash_session.opening_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Ventas en efectivo</span><span><%= number_to_currency(@cash_session.cash_payments_total, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Movimientos (ingresos - egresos)</span><span><%= number_to_currency(@cash_session.movements_total, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between font-bold text-base pt-2 border-t-2 border-ink">
+        <span>Esperado en caja</span><span><%= number_to_currency(@cash_session.calculated_expected_amount, unit: current_restaurant.currency + " ", precision: 0) %></span>
+      </div>
+      <% if @cash_session.closed? %>
+        <div class="flex justify-between"><span>Contado</span><span><%= number_to_currency(@cash_session.counted_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+        <div class="flex justify-between font-bold <%= @cash_session.difference_amount.to_f.zero? ? '' : 'text-red' %>">
+          <span>Diferencia</span><span><%= number_to_currency(@cash_session.difference_amount, unit: current_restaurant.currency + " ", precision: 0) %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">Movimientos</h2>
+    <div class="nb-box divide-y-2 divide-ink mb-4">
+      <% if @cash_movements.empty? %>
+        <p class="p-4 text-sm text-ink/60">Sin movimientos registrados.</p>
+      <% end %>
+      <% @cash_movements.each do |movement| %>
+        <div class="flex items-center justify-between p-3 text-sm">
+          <div>
+            <p class="font-bold"><%= movement.description %></p>
+            <p class="text-xs text-ink/60"><%= movement.created_by.name %> · <%= movement.created_at.strftime("%H:%M") %></p>
+          </div>
+          <span class="font-mono font-bold <%= movement.income? ? 'text-green-700' : 'text-red' %>">
+            <%= movement.income? ? "+" : "-" %><%= number_to_currency(movement.amount, unit: current_restaurant.currency + " ", precision: 0) %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @cash_session.open? %>
+      <%= form_with model: CashMovement.new, url: cash_session_cash_movements_path(@cash_session),
+            class: "nb-box p-4", data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+        <p class="field-label mb-2">Registrar movimiento</p>
+        <div class="flex gap-2 mb-3">
+          <%= f.select :kind, [ [ "Ingreso", "income" ], [ "Egreso", "expense" ] ], {}, class: "field-input" %>
+          <%= f.number_field :amount, id: "cash_movement_amount", placeholder: "Monto", step: "0.01", min: 0.01, class: "field-input",
+                data: { validate_target: "field", validate_rule: "required,number,min:0.01", action: "blur->validate#check" } %>
+        </div>
+        <p class="field-error hidden mb-2" data-validate-for="cash_movement_amount"></p>
+        <%= f.text_field :description, id: "cash_movement_description", placeholder: "Descripción (ej: compra de hielo)", class: "field-input mb-3",
+              data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+        <p class="field-error hidden mb-3" data-validate-for="cash_movement_description"></p>
+        <%= f.submit "Agregar movimiento", class: "btn-secondary w-full text-xs" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div>
+    <% if @cash_session.open? %>
+      <div class="nb-box p-5" data-controller="cash-close"
+           data-cash-close-expected-value="<%= @cash_session.calculated_expected_amount %>"
+           data-cash-close-currency-value="<%= current_restaurant.currency %>">
+        <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">Cerrar caja (arqueo)</h2>
+
+        <%= form_with url: close_cash_session_path(@cash_session), method: :patch,
+              data: { cash_close_target: "form", action: "submit->cash-close#confirmClose" } do %>
+          <div class="mb-3">
+            <label class="field-label">Efectivo contado</label>
+            <input type="number" name="counted_amount" step="0.01" min="0" class="field-input"
+                   data-cash-close-target="counted" data-action="input->cash-close#updateDifference" required>
+          </div>
+
+          <div class="mb-4 font-mono text-sm flex justify-between">
+            <span>Diferencia</span>
+            <span data-cash-close-target="difference">$ 0</span>
+          </div>
+
+          <div class="mb-4">
+            <label class="field-label">Notas (opcional)</label>
+            <textarea name="notes" rows="2" class="field-input"></textarea>
+          </div>
+
+          <button type="submit" class="btn-danger w-full">Cerrar caja</button>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="nb-box p-5">
+        <p class="text-sm text-ink/60">Cerrada por <%= @cash_session.closed_by&.name %> el <%= @cash_session.closed_at&.strftime("%d/%m/%Y %H:%M") %>.</p>
+        <% if @cash_session.notes.present? %><p class="text-sm mt-2">"<%= @cash_session.notes %>"</p><% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

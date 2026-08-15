@@ -12,6 +12,10 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  # Allow any subdomain of lvh.me / localhost so tenant subdomains work locally
+  # (lvh.me is a public DNS wildcard that resolves *.lvh.me to 127.0.0.1).
+  config.hosts.clear
+
   # Enable server timing.
   config.server_timing = true
 

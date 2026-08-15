@@ -1,0 +1,40 @@
+<header class="bg-ink text-paper p-6 text-center border-b-4 border-ink">
+  <h1 class="font-display font-black text-3xl tracking-tight"><%= @restaurant.name %></h1>
+  <% if @table %>
+    <p class="mt-2 inline-block badge badge-yellow">Mesa <%= @table.code %></p>
+  <% end %>
+</header>
+
+<div class="max-w-2xl mx-auto p-4">
+  <% if @categories.empty? %>
+    <p class="text-center text-ink/60 py-16">La carta aún no está disponible.</p>
+  <% end %>
+
+  <% @categories.each do |category| %>
+    <% items = category.menu_items.select(&:available?).sort_by(&:position) %>
+    <% next if items.empty? %>
+
+    <section class="mb-8">
+      <h2 class="font-display font-black uppercase text-xl tracking-tight mb-3 bg-yellow inline-block px-2"><%= category.name %></h2>
+
+      <div class="space-y-3">
+        <% items.each do |item| %>
+          <div class="nb-box-sm p-4 flex gap-3">
+            <% if item.image.attached? %>
+              <%= image_tag item.image.variant(resize_to_fill: [ 96, 96 ]), class: "size-24 object-cover border-4 border-ink shrink-0" %>
+            <% end %>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-baseline justify-between gap-2">
+                <p class="font-bold"><%= item.name %></p>
+                <p class="font-mono font-bold shrink-0"><%= item.formatted_price %></p>
+              </div>
+              <% if item.description.present? %>
+                <p class="text-sm text-ink/60 mt-1"><%= item.description %></p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>

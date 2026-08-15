@@ -1,0 +1,38 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="nb-heading text-2xl">Mesas</h1>
+  <%= link_to "Nueva mesa", new_dining_table_path, class: "btn-primary text-xs" %>
+</div>
+
+<% if @dining_tables.empty? %>
+  <div class="nb-box p-8 text-center text-ink/60">Aún no tienes mesas. Crea la primera.</div>
+<% else %>
+  <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <% @dining_tables.each do |table| %>
+      <% status_style = { "free" => "bg-mint", "occupied" => "bg-yellow", "reserved" => "bg-blue", "closing" => "bg-pink" }[table.status] %>
+      <div class="nb-box p-4">
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <p class="font-display font-black text-2xl"><%= table.code %></p>
+            <p class="text-xs text-ink/60 uppercase tracking-widest"><%= table.capacity %> personas</p>
+          </div>
+          <span class="badge <%= status_style %>"><%= t("dining_table.status.#{table.status}", default: table.status) %></span>
+        </div>
+
+        <% if (order = table.open_order) %>
+          <%= link_to order, class: "block nb-box-sm p-2 mb-3 bg-paper-dim text-xs" do %>
+            Pedido #<%= order.order_number %> · <%= number_to_currency(order.total, unit: current_restaurant.currency + " ", precision: 0) %>
+          <% end %>
+        <% end %>
+
+        <div class="flex gap-2 flex-wrap">
+          <%= link_to "QR", qr_dining_table_path(table), class: "btn-secondary text-xs !px-3 !py-2" %>
+          <%= link_to "Editar", edit_dining_table_path(table), class: "btn-secondary text-xs !px-3 !py-2" %>
+          <%= button_to "Eliminar", dining_table_path(table), method: :delete,
+                form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar mesa #{table.code}?",
+                                confirm_message_value: "Esta acción no se puede deshacer." } },
+                class: "btn-secondary text-xs !px-3 !py-2 !text-red !border-red" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

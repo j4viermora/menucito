@@ -4,5 +4,20 @@
 
 import { application } from "./application"
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import DismissController from "./dismiss_controller"
+application.register("dismiss", DismissController)
+
+import ValidateController from "./validate_controller"
+application.register("validate", ValidateController)
+
+import ConfirmController from "./confirm_controller"
+application.register("confirm", ConfirmController)
+
+import ComboboxController from "./combobox_controller"
+application.register("combobox", ComboboxController)
+
+import PosCartController from "./pos_cart_controller"
+application.register("pos-cart", PosCartController)
+
+import CashCloseController from "./cash_close_controller"
+application.register("cash-close", CashCloseController)

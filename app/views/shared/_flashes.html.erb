@@ -1,0 +1,12 @@
+<% if notice %>
+  <div class="nb-box-sm bg-mint px-4 py-3 mb-6 font-bold flex items-center justify-between" data-controller="dismiss">
+    <span><%= notice %></span>
+    <button type="button" data-action="dismiss#close" class="font-black px-2" aria-label="Cerrar">&times;</button>
+  </div>
+<% end %>
+<% if alert %>
+  <div class="nb-box-sm bg-red text-white px-4 py-3 mb-6 font-bold flex items-center justify-between" data-controller="dismiss">
+    <span><%= alert %></span>
+    <button type="button" data-action="dismiss#close" class="font-black px-2" aria-label="Cerrar">&times;</button>
+  </div>
+<% end %>

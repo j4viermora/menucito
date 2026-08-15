@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Comanda #<%= @order.order_number %></title>
+    <style>
+      @page { size: 80mm auto; margin: 4mm; }
+      * { box-sizing: border-box; }
+      body {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        width: 76mm;
+        margin: 0 auto;
+        color: #000;
+        font-size: 12px;
+      }
+      h1 { font-size: 16px; margin: 0 0 2px; text-transform: uppercase; }
+      .muted { color: #444; font-size: 11px; }
+      hr { border: none; border-top: 2px dashed #000; margin: 8px 0; }
+      table { width: 100%; border-collapse: collapse; }
+      td { padding: 2px 0; vertical-align: top; }
+      .qty { width: 24px; font-weight: bold; }
+      .name { font-weight: bold; }
+      .notes { font-size: 11px; color: #444; padding-left: 24px; }
+      .total { font-weight: bold; font-size: 14px; text-align: right; margin-top: 8px; }
+      .center { text-align: center; }
+    </style>
+  </head>
+  <body onload="window.print()">
+    <div class="center">
+      <h1><%= current_restaurant.name %></h1>
+      <p class="muted">COMANDA · #<%= @order.order_number %></p>
+      <p class="muted"><%= @order.dining_table ? "MESA #{@order.dining_table.code}" : "MOSTRADOR" %></p>
+      <p class="muted"><%= @order.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+    </div>
+
+    <hr>
+
+    <table>
+      <% @order_items.each do |item| %>
+        <tr>
+          <td class="qty"><%= item.quantity %>x</td>
+          <td class="name"><%= item.menu_item.name %></td>
+        </tr>
+        <% if item.notes.present? %>
+          <tr><td></td><td class="notes"><%= item.notes %></td></tr>
+        <% end %>
+      <% end %>
+    </table>
+
+    <hr>
+
+    <% if @order.notes.present? %>
+      <p class="muted">Nota: <%= @order.notes %></p>
+      <hr>
+    <% end %>
+
+    <p class="center muted">Pedido por <%= @order.created_by.name %></p>
+  </body>
+</html>

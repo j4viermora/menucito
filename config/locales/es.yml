@@ -1,0 +1,44 @@
+es:
+  activerecord:
+    errors:
+      messages:
+        blank: "no puede estar en blanco"
+        taken: "ya está en uso"
+        invalid: "no es válido"
+        too_short: "es muy corto (mínimo %{count} caracteres)"
+        greater_than: "debe ser mayor que %{count}"
+        greater_than_or_equal_to: "debe ser mayor o igual que %{count}"
+        less_than_or_equal_to: "debe ser menor o igual que %{count}"
+        not_a_number: "no es un número"
+    attributes:
+      restaurant:
+        name: "Nombre"
+        subdomain: "Subdominio"
+      user:
+        name: "Nombre"
+        email: "Correo"
+        password: "Contraseña"
+        role: "Rol"
+      dining_table:
+        code: "Código"
+        capacity: "Capacidad"
+      menu_category:
+        name: "Nombre"
+      menu_item:
+        name: "Nombre"
+        price: "Precio"
+        menu_category: "Categoría"
+      discount:
+        name: "Nombre"
+        value: "Valor"
+      cash_session:
+        opening_amount: "Monto inicial"
+      cash_movement:
+        description: "Descripción"
+        amount: "Monto"
+
+  errors:
+    messages:
+      not_saved:
+        one: "1 error impidió guardar este %{resource}"
+        other: "%{count} errores impidieron guardar este %{resource}"

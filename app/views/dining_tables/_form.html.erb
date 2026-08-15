@@ -1,0 +1,25 @@
+<%= form_with model: dining_table, class: "nb-box p-6 max-w-md",
+      data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+  <%= render "shared/error_messages", resource: dining_table %>
+
+  <div class="mb-4">
+    <%= f.label :code, "Código / número de mesa", class: "field-label" %>
+    <%= f.text_field :code, id: "dining_table_code", class: "field-input",
+          data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="dining_table_code"></p>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :capacity, "Capacidad", class: "field-label" %>
+    <%= f.number_field :capacity, id: "dining_table_capacity", class: "field-input", min: 1,
+          data: { validate_target: "field", validate_rule: "required,number,min:1", action: "blur->validate#check" } %>
+    <p class="field-error hidden" data-validate-for="dining_table_capacity"></p>
+  </div>
+
+  <div class="mb-6">
+    <%= f.label :status, "Estado", class: "field-label" %>
+    <%= f.select :status, DiningTable.statuses.keys.map { |k| [ k.humanize, k ] }, {}, class: "field-input" %>
+  </div>
+
+  <%= f.submit "Guardar mesa", class: "btn-primary w-full" %>
+<% end %>
