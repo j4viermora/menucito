@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
   resources :users, except: [ :show ]
 
+  resource :restaurant_settings, only: [ :edit, :update ]
+
   # Ventas por mostrador (counter sales / POS)
   get "pos" => "pos#index", as: :pos
   post "pos" => "pos#create"
@@ -37,6 +39,7 @@ Rails.application.routes.draw do
   resources :orders, only: [ :show, :update ] do
     member do
       get :comanda
+      get :bill
       post :send_to_kitchen
       post :pay
       post :cancel

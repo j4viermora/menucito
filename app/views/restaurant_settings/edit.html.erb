@@ -1,0 +1,16 @@
+<h1 class="nb-heading text-2xl mb-6">Ajustes del restaurante</h1>
+
+<div class="nb-box p-6 max-w-lg">
+  <%= form_with model: @restaurant, url: restaurant_settings_path, method: :patch do |f| %>
+    <label class="mb-2 flex items-center gap-3 min-h-12 -mx-2 px-2 cursor-pointer">
+      <%= f.check_box :waiters_can_collect_payment, class: "size-5 shrink-0 border-4 border-ink rounded-none" %>
+      <span class="field-label mb-0">Los meseros pueden cobrar y cerrar mesas</span>
+    </label>
+    <p class="field-hint mb-6">
+      Si está desactivado, solo cajero, administrador y dueño pueden marcar un pedido como pagado;
+      los meseros deberán derivar el cobro a caja.
+    </p>
+
+    <%= f.submit "Guardar", class: "btn-primary w-full" %>
+  <% end %>
+</div>

@@ -53,8 +53,14 @@
     <%= button_to "Enviar a cocina", send_to_kitchen_order_path(@order), method: :post, class: "btn-primary text-xs" %>
   <% end %>
 
+  <% if current_user.can_sell_at_counter? %>
+    <%= link_to "Imprimir cuenta", bill_order_path(@order), target: "_blank", class: "btn-secondary text-xs" %>
+  <% end %>
+
   <% if !@order.paid? && !@order.cancelled? %>
-    <%= button_to "Marcar como pagado", pay_order_path(@order), method: :post, class: "btn-primary text-xs" %>
+    <% if current_user.can_collect_payment? %>
+      <%= button_to "Marcar como pagado", pay_order_path(@order), method: :post, class: "btn-primary text-xs" %>
+    <% end %>
     <%= button_to "Cancelar pedido", cancel_order_path(@order), method: :post,
           form: { data: { controller: "confirm", confirm_title_value: "¿Cancelar este pedido?",
                           confirm_message_value: "El pedido se marcará como cancelado y no se podrá cobrar." } },

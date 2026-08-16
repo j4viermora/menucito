@@ -27,6 +27,12 @@ class User < ApplicationRecord
     cashier? || can_manage_restaurant?
   end
 
+  # Collects payment (marks an order paid). Cashiers/admins/owners always
+  # can; waiters only if the restaurant has opted them in.
+  def can_collect_payment?
+    can_sell_at_counter? || (waiter? && restaurant.waiters_can_collect_payment?)
+  end
+
   # Sees the kitchen display (pending/sent dishes).
   def kitchen_access?
     kitchen? || can_manage_restaurant?

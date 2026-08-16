@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cuenta #<%= @order.order_number %></title>
+    <style>
+      @page { size: 80mm auto; margin: 4mm; }
+      * { box-sizing: border-box; }
+      body {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        width: 76mm;
+        margin: 0 auto;
+        color: #000;
+        font-size: 12px;
+      }
+      h1 { font-size: 16px; margin: 0 0 2px; text-transform: uppercase; }
+      .muted { color: #444; font-size: 11px; }
+      hr { border: none; border-top: 2px dashed #000; margin: 8px 0; }
+      table { width: 100%; border-collapse: collapse; }
+      td { padding: 2px 0; vertical-align: top; }
+      .qty { width: 24px; font-weight: bold; }
+      .name { font-weight: bold; }
+      .price { text-align: right; white-space: nowrap; }
+      .totals td { padding: 1px 0; }
+      .totals .grand td { font-weight: bold; font-size: 14px; padding-top: 4px; }
+      .center { text-align: center; }
+      .no-print {
+        font-family: "Space Grotesk", sans-serif;
+        display: block;
+        text-align: center;
+        margin-top: 16px;
+        text-decoration: underline;
+      }
+      @media print { .no-print { display: none; } }
+    </style>
+  </head>
+  <body onload="window.print()">
+    <div class="center">
+      <h1><%= current_restaurant.name %></h1>
+      <p class="muted">CUENTA · #<%= @order.order_number %></p>
+      <p class="muted"><%= @order.dining_table ? "MESA #{@order.dining_table.code}" : "MOSTRADOR" %></p>
+      <p class="muted"><%= @order.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+    </div>
+
+    <hr>
+
+    <table>
+      <% @order.order_items.includes(:menu_item).each do |item| %>
+        <tr>
+          <td class="qty"><%= item.quantity %>x</td>
+          <td class="name"><%= item.menu_item.name %></td>
+          <td class="price"><%= number_to_currency(item.line_total, unit: current_restaurant.currency + " ", precision: 0) %></td>
+        </tr>
+      <% end %>
+    </table>
+
+    <hr>
+
+    <table class="totals">
+      <tr><td>Subtotal</td><td></td><td class="price"><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
+      <% if @order.discount_amount.to_f > 0 %>
+        <tr><td>Descuento<% if @order.discount %> (<%= @order.discount.name %>)<% end %></td><td></td><td class="price">-<%= number_to_currency(@order.discount_amount, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
+      <% end %>
+      <tr class="grand"><td>Total</td><td></td><td class="price"><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
+    </table>
+
+    <hr>
+
+    <p class="center muted">¡Gracias por su visita!</p>
+
+    <% if @order.dining_table %>
+      <a class="no-print" href="<%= dining_table_path(@order.dining_table) %>">Volver a la mesa</a>
+    <% else %>
+      <a class="no-print" href="<%= order_path(@order) %>">Volver al pedido</a>
+    <% end %>
+  </body>
+</html>

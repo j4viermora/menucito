@@ -1,8 +1,10 @@
 class OrdersController < AuthenticatedController
   before_action { require_permission!(:front_of_house?) }
+  before_action(only: :bill) { require_permission!(:can_sell_at_counter?) }
+  before_action(only: :pay) { require_permission!(:can_collect_payment?) }
   before_action :set_order
 
-  layout false, only: [ :comanda ]
+  layout false, only: [ :comanda, :bill ]
 
   def show
   end
@@ -24,6 +26,9 @@ class OrdersController < AuthenticatedController
     end.includes(:menu_item)
   end
 
+  def bill
+  end
+
   def send_to_kitchen
     pending_ids = @order.order_items.pending.pluck(:id)
 
@@ -34,7 +39,7 @@ class OrdersController < AuthenticatedController
 
     @order.order_items.where(id: pending_ids).update_all(status: :printed)
     @order.update!(status: :sent_to_kitchen) if @order.open?
-    redirect_to comanda_order_path(@order, only: pending_ids.join(","))
+    redirect_to (@order.dining_table ? dining_table_path(@order.dining_table) : @order), notice: "Pedido enviado a cocina."
   end
 
   def pay
