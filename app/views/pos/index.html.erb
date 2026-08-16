@@ -28,7 +28,7 @@
       <% @menu_items.each do |item| %>
         <div class="nb-box-sm p-3 flex flex-col" data-pos-cart-target="card"
              data-menu-item-id="<%= item.id %>" data-name="<%= item.name %>"
-             data-price="<%= item.price %>" data-category="<%= item.menu_category.name %>">
+             data-price="<%= item.price.to_f %>" data-category="<%= item.menu_category.name %>">
           <span class="badge badge-outline w-fit mb-2 text-[10px]"><%= item.menu_category.name %></span>
           <p class="font-bold text-sm mb-1"><%= item.name %></p>
           <p class="font-mono font-bold text-base mb-3"><%= item.formatted_price %></p>

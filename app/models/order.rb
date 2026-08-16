@@ -9,6 +9,11 @@ class Order < ApplicationRecord
 
   acts_as_tenant :restaurant
 
+  delegate :currency, to: :restaurant, allow_nil: true
+  monetize :discount_amount_cents, with_model_currency: :currency
+  monetize :subtotal_cents, with_model_currency: :currency
+  monetize :total_cents, with_model_currency: :currency
+
   enum :order_type, { counter: 0, table_service: 1, qr_order: 2 }, default: :counter
   enum :status, { open: 0, sent_to_kitchen: 1, served: 2, paid: 3, cancelled: 4 }, default: :open
 
@@ -22,13 +27,13 @@ class Order < ApplicationRecord
   scope :active, -> { where.not(status: [ :paid, :cancelled ]) }
 
   def recalculate_totals!
-    sub = order_items.sum { |i| i.quantity * i.unit_price }
-    disc = discount ? discount.amount_for(sub) : 0
+    sub = order_items.sum(Money.new(0, currency)) { |i| i.line_total }
+    disc = discount ? discount.amount_for(sub) : Money.new(0, currency)
     update!(subtotal: sub, discount_amount: disc, total: sub - disc)
   end
 
   def amount_paid
-    payments.sum(:amount)
+    Money.new(payments.sum(:amount_cents), currency)
   end
 
   def balance_due

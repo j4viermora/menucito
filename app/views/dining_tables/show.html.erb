@@ -63,7 +63,7 @@
                 </span>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <span class="font-mono font-bold text-sm"><%= number_to_currency(item.line_total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+                <span class="font-mono font-bold text-sm"><%= number_to_currency(item.line_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
                 <% if item.pending? %>
                   <%= button_to "×", order_order_item_path(@order, item), method: :delete,
                         class: "btn-ghost !px-2 !py-1 text-red" %>
@@ -85,12 +85,12 @@
       <% end %>
 
       <div class="border-t-4 border-ink pt-3 space-y-1 mb-4 font-mono text-sm">
-        <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+        <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
         <% if @order.discount_amount.to_f > 0 %>
-          <div class="flex justify-between"><span>Descuento</span><span>-<%= number_to_currency(@order.discount_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+          <div class="flex justify-between"><span>Descuento</span><span>-<%= number_to_currency(@order.discount_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
         <% end %>
         <div class="flex justify-between font-bold text-lg pt-1 border-t-2 border-ink">
-          <span>Total</span><span><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+          <span>Total</span><span><%= number_to_currency(@order.total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
         </div>
       </div>
 
@@ -128,7 +128,7 @@
           class: "flex lg:hidden fixed bottom-0 inset-x-0 z-30 items-center justify-between gap-3 px-4 py-3
                    bg-ink text-paper border-t-4 border-ink min-h-14" do %>
       <span class="text-sm font-bold uppercase tracking-wide"><%= pluralize(@order.order_items.sum(:quantity), "plato") %></span>
-      <span class="font-mono font-bold text-lg"><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+      <span class="font-mono font-bold text-lg"><%= number_to_currency(@order.total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
     <% end %>
   <% end %>
 <% end %>

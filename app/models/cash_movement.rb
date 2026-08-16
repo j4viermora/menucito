@@ -5,6 +5,9 @@ class CashMovement < ApplicationRecord
 
   acts_as_tenant :restaurant
 
+  delegate :currency, to: :restaurant, allow_nil: true
+  monetize :amount_cents, with_model_currency: :currency
+
   enum :kind, { income: 0, expense: 1 }, default: :expense
 
   validates :description, presence: true

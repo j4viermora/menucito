@@ -18,7 +18,7 @@
         <span class="badge <%= session.open? ? 'badge-mint' : 'badge-outline' %>"><%= session.open? ? "Abierta" : "Cerrada" %></span>
         <% if session.closed? %>
           <p class="text-xs font-mono mt-1 <%= session.difference_amount.to_f.zero? ? 'text-ink/60' : 'text-red font-bold' %>">
-            Dif: <%= number_to_currency(session.difference_amount, unit: current_restaurant.currency + " ", precision: 0) %>
+            Dif: <%= number_to_currency(session.difference_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %>
           </p>
         <% end %>
       </div>

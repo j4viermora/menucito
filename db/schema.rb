@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_16_195537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -43,7 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
   end
 
   create_table "cash_movements", force: :cascade do |t|
-    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.bigint "amount_cents", null: false
     t.bigint "cash_session_id", null: false
     t.datetime "created_at", null: false
     t.bigint "created_by_id", null: false
@@ -59,14 +59,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
   create_table "cash_sessions", force: :cascade do |t|
     t.datetime "closed_at"
     t.bigint "closed_by_id"
-    t.decimal "counted_amount", precision: 12, scale: 2
+    t.bigint "counted_amount_cents"
     t.datetime "created_at", null: false
-    t.decimal "difference_amount", precision: 12, scale: 2
-    t.decimal "expected_amount", precision: 12, scale: 2
+    t.bigint "difference_amount_cents"
+    t.bigint "expected_amount_cents"
     t.text "notes"
     t.datetime "opened_at", null: false
     t.bigint "opened_by_id", null: false
-    t.decimal "opening_amount", precision: 12, scale: 2, default: "0.0", null: false
+    t.bigint "opening_amount_cents", default: 0, null: false
     t.bigint "restaurant_id", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
@@ -119,7 +119,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
     t.bigint "menu_category_id", null: false
     t.string "name", null: false
     t.integer "position", default: 0, null: false
-    t.decimal "price", precision: 12, scale: 2, null: false
+    t.bigint "price_cents", null: false
     t.bigint "restaurant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["menu_category_id"], name: "index_menu_items_on_menu_category_id"
@@ -134,7 +134,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
     t.integer "quantity", default: 1, null: false
     t.bigint "restaurant_id", null: false
     t.integer "status", default: 0, null: false
-    t.decimal "unit_price", precision: 12, scale: 2, null: false
+    t.bigint "unit_price_cents", null: false
     t.datetime "updated_at", null: false
     t.index ["menu_item_id"], name: "index_order_items_on_menu_item_id"
     t.index ["order_id"], name: "index_order_items_on_order_id"
@@ -146,15 +146,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
     t.datetime "created_at", null: false
     t.bigint "created_by_id", null: false
     t.bigint "dining_table_id"
-    t.decimal "discount_amount", precision: 12, scale: 2, default: "0.0", null: false
+    t.bigint "discount_amount_cents", default: 0, null: false
     t.bigint "discount_id"
     t.text "notes"
     t.string "order_number", null: false
     t.integer "order_type", default: 0, null: false
     t.bigint "restaurant_id", null: false
     t.integer "status", default: 0, null: false
-    t.decimal "subtotal", precision: 12, scale: 2, default: "0.0", null: false
-    t.decimal "total", precision: 12, scale: 2, default: "0.0", null: false
+    t.bigint "subtotal_cents", default: 0, null: false
+    t.bigint "total_cents", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["cash_session_id"], name: "index_orders_on_cash_session_id"
     t.index ["created_by_id"], name: "index_orders_on_created_by_id"
@@ -165,7 +165,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_16_192246) do
   end
 
   create_table "payments", force: :cascade do |t|
-    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.bigint "amount_cents", null: false
     t.bigint "cash_session_id"
     t.datetime "created_at", null: false
     t.integer "method", default: 0, null: false

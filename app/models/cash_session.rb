@@ -8,6 +8,12 @@ class CashSession < ApplicationRecord
 
   acts_as_tenant :restaurant
 
+  delegate :currency, to: :restaurant, allow_nil: true
+  monetize :opening_amount_cents, with_model_currency: :currency
+  monetize :counted_amount_cents, with_model_currency: :currency, allow_nil: true
+  monetize :expected_amount_cents, with_model_currency: :currency, allow_nil: true
+  monetize :difference_amount_cents, with_model_currency: :currency, allow_nil: true
+
   enum :status, { open: 0, closed: 1 }, default: :open
 
   validates :opening_amount, numericality: { greater_than_or_equal_to: 0 }
@@ -16,15 +22,16 @@ class CashSession < ApplicationRecord
   scope :recent, -> { order(opened_at: :desc) }
 
   def sales_total
-    payments.sum(:amount)
+    Money.new(payments.sum(:amount_cents), currency)
   end
 
   def movements_total
-    cash_movements.sum("CASE WHEN kind = 0 THEN amount ELSE -amount END")
+    cents = cash_movements.sum("CASE WHEN kind = 0 THEN amount_cents ELSE -amount_cents END")
+    Money.new(cents, currency)
   end
 
   def cash_payments_total
-    payments.where(method: :cash).sum(:amount)
+    Money.new(payments.where(method: :cash).sum(:amount_cents), currency)
   end
 
   def sold_orders
@@ -44,14 +51,15 @@ class CashSession < ApplicationRecord
   end
 
   def close!(counted_amount:, closed_by:, notes: nil)
+    counted = Money.from_amount(counted_amount, currency)
     expected = calculated_expected_amount
     update!(
       status: :closed,
       closed_at: Time.current,
       closed_by: closed_by,
-      counted_amount: counted_amount,
+      counted_amount: counted,
       expected_amount: expected,
-      difference_amount: counted_amount - expected,
+      difference_amount: counted - expected,
       notes: notes
     )
   end

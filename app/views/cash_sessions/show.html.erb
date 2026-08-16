@@ -9,16 +9,16 @@
 <div class="grid md:grid-cols-2 gap-6">
   <div>
     <div class="nb-box p-5 mb-6 font-mono text-sm space-y-1">
-      <div class="flex justify-between"><span>Monto inicial</span><span><%= number_to_currency(@cash_session.opening_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
-      <div class="flex justify-between"><span>Ventas en efectivo</span><span><%= number_to_currency(@cash_session.cash_payments_total, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
-      <div class="flex justify-between"><span>Movimientos (ingresos - egresos)</span><span><%= number_to_currency(@cash_session.movements_total, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Monto inicial</span><span><%= number_to_currency(@cash_session.opening_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Ventas en efectivo</span><span><%= number_to_currency(@cash_session.cash_payments_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Movimientos (ingresos - egresos)</span><span><%= number_to_currency(@cash_session.movements_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
       <div class="flex justify-between font-bold text-base pt-2 border-t-2 border-ink">
-        <span>Esperado en caja</span><span><%= number_to_currency(@cash_session.calculated_expected_amount, unit: current_restaurant.currency + " ", precision: 0) %></span>
+        <span>Esperado en caja</span><span><%= number_to_currency(@cash_session.calculated_expected_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
       </div>
       <% if @cash_session.closed? %>
-        <div class="flex justify-between"><span>Contado</span><span><%= number_to_currency(@cash_session.counted_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+        <div class="flex justify-between"><span>Contado</span><span><%= number_to_currency(@cash_session.counted_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
         <div class="flex justify-between font-bold <%= @cash_session.difference_amount.to_f.zero? ? '' : 'text-red' %>">
-          <span>Diferencia</span><span><%= number_to_currency(@cash_session.difference_amount, unit: current_restaurant.currency + " ", precision: 0) %></span>
+          <span>Diferencia</span><span><%= number_to_currency(@cash_session.difference_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
         </div>
       <% end %>
     </div>
@@ -35,7 +35,7 @@
             <p class="text-xs text-ink/60"><%= movement.created_by.name %> · <%= movement.created_at.strftime("%H:%M") %></p>
           </div>
           <span class="font-mono font-bold <%= movement.income? ? 'text-green-700' : 'text-red' %>">
-            <%= movement.income? ? "+" : "-" %><%= number_to_currency(movement.amount, unit: current_restaurant.currency + " ", precision: 0) %>
+            <%= movement.income? ? "+" : "-" %><%= number_to_currency(movement.amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %>
           </span>
         </div>
       <% end %>
@@ -62,7 +62,7 @@
   <div>
     <% if @cash_session.open? %>
       <div class="nb-box p-5" data-controller="cash-close"
-           data-cash-close-expected-value="<%= @cash_session.calculated_expected_amount %>"
+           data-cash-close-expected-value="<%= @cash_session.calculated_expected_amount.to_f %>"
            data-cash-close-currency-value="<%= current_restaurant.currency %>">
         <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">Cerrar caja (arqueo)</h2>
 
@@ -111,7 +111,7 @@
           <div class="flex items-center justify-between p-3 text-sm">
             <span class="font-bold"><%= row[:name] %></span>
             <span class="font-mono">
-              <%= row[:quantity] %>x · <%= number_to_currency(row[:total], unit: current_restaurant.currency + " ", precision: 0) %>
+              <%= row[:quantity] %>x · <%= number_to_currency(row[:total].to_f, unit: current_restaurant.currency + " ", precision: 0) %>
             </span>
           </div>
         <% end %>
@@ -134,7 +134,7 @@
                 <%= order.order_items.sum(&:quantity) %> platos
               </p>
             </div>
-            <span class="font-mono font-bold"><%= number_to_currency(order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+            <span class="font-mono font-bold"><%= number_to_currency(order.total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
           <% end %>
         <% end %>
       <% end %>

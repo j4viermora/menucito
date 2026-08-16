@@ -6,6 +6,9 @@ class MenuItem < ApplicationRecord
 
   acts_as_tenant :restaurant
 
+  delegate :currency, to: :restaurant, allow_nil: true
+  monetize :price_cents, with_model_currency: :currency
+
   validates :name, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
 
@@ -13,6 +16,6 @@ class MenuItem < ApplicationRecord
   scope :available, -> { where(available: true) }
 
   def formatted_price
-    ActiveSupport::NumberHelper.number_to_currency(price, unit: restaurant.currency + " ", precision: 0)
+    ActiveSupport::NumberHelper.number_to_currency(price.to_f, unit: restaurant.currency + " ", precision: 0)
   end
 end

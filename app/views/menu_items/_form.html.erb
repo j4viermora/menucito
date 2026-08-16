@@ -16,7 +16,7 @@
 
   <div class="mb-4">
     <%= f.label :price, "Precio", class: "field-label" %>
-    <%= f.number_field :price, id: "menu_item_price", step: "0.01", min: 0, class: "field-input",
+    <%= f.number_field :price, id: "menu_item_price", value: menu_item.price&.to_f, step: "0.01", min: 0, class: "field-input",
           data: { validate_target: "field", validate_rule: "required,number,min:0", action: "blur->validate#check" } %>
     <p class="field-error hidden" data-validate-for="menu_item_price"></p>
   </div>

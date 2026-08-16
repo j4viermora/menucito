@@ -28,7 +28,7 @@ class CashSessionsController < AuthenticatedController
     )
 
     if @cash_session.save
-      redirect_to @cash_session, notice: "Caja abierta con #{@cash_session.opening_amount}."
+      redirect_to @cash_session, notice: "Caja abierta con #{@cash_session.opening_amount.format}."
     else
       render :new, status: :unprocessable_entity
     end
@@ -43,7 +43,7 @@ class CashSessionsController < AuthenticatedController
   def close
     counted = params[:counted_amount].to_f
     @cash_session.close!(counted_amount: counted, closed_by: current_user, notes: params[:notes])
-    redirect_to @cash_session, notice: "Caja cerrada. Diferencia: #{@cash_session.difference_amount}"
+    redirect_to @cash_session, notice: "Caja cerrada. Diferencia: #{@cash_session.difference_amount.format}"
   end
 
   private

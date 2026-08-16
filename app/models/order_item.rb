@@ -5,6 +5,9 @@ class OrderItem < ApplicationRecord
 
   acts_as_tenant :restaurant
 
+  delegate :currency, to: :restaurant, allow_nil: true
+  monetize :unit_price_cents, with_model_currency: :currency
+
   enum :status, { pending: 0, printed: 1, served: 2 }, default: :pending
 
   validates :quantity, numericality: { greater_than: 0 }
@@ -13,7 +16,7 @@ class OrderItem < ApplicationRecord
   before_validation :assign_unit_price, on: :create
 
   def line_total
-    quantity * unit_price
+    unit_price * quantity
   end
 
   private

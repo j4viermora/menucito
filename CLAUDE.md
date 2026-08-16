@@ -78,6 +78,10 @@ Cash flow:
 
 Discounts: `Discount#kind` is `percentage` or `fixed_amount`; `Discount#amount_for(subtotal)` computes the discount and clamps it to the subtotal.
 
+## Money handling
+
+All monetary values must use the `money-rails` gem (`Money`/`Monetize`), not plain `decimal` columns or raw `BigDecimal` math. Existing money columns (`amount`, `price`, `unit_price`, `subtotal`, `total`, `discount_amount`, `opening_amount`, `expected_amount`, `counted_amount`, `difference_amount`, `value`) predate this rule and are still plain `decimal, precision: 12, scale: 2`; new money fields and any migration touching these must be `monetize`d instead of adding more raw decimal columns.
+
 ## Frontend
 
 Hotwire stack: Turbo + Stimulus, esbuild for JS bundling, Tailwind v4 (CSS-first config via `@theme` in `app/assets/stylesheets/application.tailwind.css`, no `tailwind.config.js`). Custom theme tokens (`--color-ink`, `--color-paper`, `--color-yellow`, etc.) implement a neobrutalist design system — thick borders, hard drop shadows, high-contrast accent colors. `docs/MOBILE_DESIGN.md` documents the mobile-specific rules for this system (touch target sizes, shadow scaling, safe-area padding) if you're touching responsive/mobile UI.

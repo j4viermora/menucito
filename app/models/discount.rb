@@ -21,9 +21,9 @@ class Discount < ApplicationRecord
   end
 
   def amount_for(subtotal)
-    return 0 if subtotal.blank? || subtotal <= 0
-    raw = percentage? ? subtotal * (value / 100.0) : value
-    [ raw, subtotal ].min.round(2)
+    return Money.new(0, subtotal.try(:currency)) if subtotal.blank? || subtotal.zero? || subtotal.negative?
+    raw = percentage? ? subtotal * (value / 100.0) : Money.from_amount(value, subtotal.currency)
+    [ raw, subtotal ].min
   end
 
   private

@@ -27,8 +27,8 @@
         <tr class="border-b-2 border-ink/20">
           <td class="py-2 font-display"><%= item.menu_item.name %></td>
           <td class="py-2 text-center"><%= item.quantity %></td>
-          <td class="py-2 text-right"><%= number_to_currency(item.unit_price, unit: current_restaurant.currency + " ", precision: 0) %></td>
-          <td class="py-2 text-right font-bold"><%= number_to_currency(item.line_total, unit: current_restaurant.currency + " ", precision: 0) %></td>
+          <td class="py-2 text-right"><%= number_to_currency(item.unit_price.to_f, unit: current_restaurant.currency + " ", precision: 0) %></td>
+          <td class="py-2 text-right font-bold"><%= number_to_currency(item.line_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></td>
         </tr>
       <% end %>
     </tbody>
@@ -36,12 +36,12 @@
   </div>
 
   <div class="mt-4 pt-4 border-t-4 border-ink space-y-1 font-mono text-sm max-w-xs ml-auto">
-    <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+    <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
     <% if @order.discount_amount.to_f > 0 %>
-      <div class="flex justify-between"><span>Descuento</span><span>-<%= number_to_currency(@order.discount_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Descuento</span><span>-<%= number_to_currency(@order.discount_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
     <% end %>
     <div class="flex justify-between font-bold text-lg pt-1 border-t-2 border-ink">
-      <span>Total</span><span><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+      <span>Total</span><span><%= number_to_currency(@order.total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
     </div>
   </div>
 </div>

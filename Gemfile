@@ -51,6 +51,9 @@ gem "acts_as_tenant"
 # QR code generation for the public menu
 gem "rqrcode"
 
+# Money as a value object (cents-backed columns, currency-aware formatting/math)
+gem "money-rails"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

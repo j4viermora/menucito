@@ -48,7 +48,7 @@
         <tr>
           <td class="qty"><%= item.quantity %>x</td>
           <td class="name"><%= item.menu_item.name %></td>
-          <td class="price"><%= number_to_currency(item.line_total, unit: current_restaurant.currency + " ", precision: 0) %></td>
+          <td class="price"><%= number_to_currency(item.line_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></td>
         </tr>
       <% end %>
     </table>
@@ -56,11 +56,11 @@
     <hr>
 
     <table class="totals">
-      <tr><td>Subtotal</td><td></td><td class="price"><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
+      <tr><td>Subtotal</td><td></td><td class="price"><%= number_to_currency(@order.subtotal.to_f, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
       <% if @order.discount_amount.to_f > 0 %>
-        <tr><td>Descuento<% if @order.discount %> (<%= @order.discount.name %>)<% end %></td><td></td><td class="price">-<%= number_to_currency(@order.discount_amount, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
+        <tr><td>Descuento<% if @order.discount %> (<%= @order.discount.name %>)<% end %></td><td></td><td class="price">-<%= number_to_currency(@order.discount_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
       <% end %>
-      <tr class="grand"><td>Total</td><td></td><td class="price"><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
+      <tr class="grand"><td>Total</td><td></td><td class="price"><%= number_to_currency(@order.total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></td></tr>
     </table>
 
     <hr>
