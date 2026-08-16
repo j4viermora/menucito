@@ -33,10 +33,10 @@
     <%= f.file_field :image, accept: "image/*", class: "field-input" %>
   </div>
 
-  <div class="mb-6 flex items-center gap-2">
-    <%= f.check_box :available, class: "size-5 border-4 border-ink rounded-none" %>
-    <%= f.label :available, "Disponible para la venta", class: "field-label mb-0" %>
-  </div>
+  <label class="mb-6 flex items-center gap-3 min-h-12 -mx-2 px-2 cursor-pointer">
+    <%= f.check_box :available, class: "size-5 shrink-0 border-4 border-ink rounded-none" %>
+    <span class="field-label mb-0">Disponible para la venta</span>
+  </label>
 
   <%= f.submit "Guardar plato", class: "btn-primary w-full" %>
 <% end %>

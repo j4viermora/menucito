@@ -22,15 +22,15 @@
     <p class="field-hint">Si es porcentaje, ingresa un número entre 1 y 100.</p>
   </div>
 
-  <div class="mb-4 flex items-center gap-2">
-    <%= f.check_box :active, class: "size-5 border-4 border-ink rounded-none" %>
-    <%= f.label :active, "Activo", class: "field-label mb-0" %>
-  </div>
+  <label class="mb-4 flex items-center gap-3 min-h-12 -mx-2 px-2 cursor-pointer">
+    <%= f.check_box :active, class: "size-5 shrink-0 border-4 border-ink rounded-none" %>
+    <span class="field-label mb-0">Activo</span>
+  </label>
 
-  <div class="mb-6 flex items-center gap-2">
-    <%= f.check_box :requires_authorization, class: "size-5 border-4 border-ink rounded-none" %>
-    <%= f.label :requires_authorization, "Requiere autorización de un supervisor", class: "field-label mb-0" %>
-  </div>
+  <label class="mb-6 flex items-center gap-3 min-h-12 -mx-2 px-2 cursor-pointer">
+    <%= f.check_box :requires_authorization, class: "size-5 shrink-0 border-4 border-ink rounded-none" %>
+    <span class="field-label mb-0">Requiere autorización de un supervisor</span>
+  </label>
 
   <%= f.submit "Guardar descuento", class: "btn-primary w-full" %>
 <% end %>

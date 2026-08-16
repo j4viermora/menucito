@@ -10,7 +10,7 @@
   </div>
 <% end %>
 
-<div class="grid lg:grid-cols-[1fr_360px] gap-6" data-controller="pos-cart" data-pos-cart-currency-value="<%= current_restaurant.currency %>">
+<div class="grid lg:grid-cols-[1fr_360px] gap-6 pb-20 lg:pb-0" data-controller="pos-cart" data-pos-cart-currency-value="<%= current_restaurant.currency %>">
   <%# Selector de platos %>
   <div>
     <div class="relative mb-4">
@@ -41,7 +41,7 @@
   </div>
 
   <%# Carrito / cobro %>
-  <%= form_with url: pos_path, method: :post, class: "nb-box p-5 h-fit lg:sticky lg:top-6" do |f| %>
+  <%= form_with url: pos_path, method: :post, class: "nb-box p-5 h-fit lg:sticky lg:top-6", id: "pos-cart-panel" do |f| %>
     <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3 flex items-center justify-between">
       Venta actual
       <button type="button" class="btn-ghost text-[11px] !px-2 !py-1 text-red" data-action="pos-cart#clear">Vaciar</button>
@@ -92,4 +92,12 @@
       </button>
     </div>
   <% end %>
+
+  <button type="button"
+          data-pos-cart-target="mobileBar" data-action="pos-cart#scrollToCart"
+          class="hidden lg:hidden fixed bottom-0 inset-x-0 z-30 items-center justify-between gap-3 px-4 py-3
+                 bg-ink text-paper border-t-4 border-ink min-h-14">
+    <span class="text-sm font-bold uppercase tracking-wide"><span data-pos-cart-target="mobileCount">0</span> platos</span>
+    <span class="font-mono font-bold text-lg" data-pos-cart-target="mobileTotal">$ 0</span>
+  </button>
 </div>

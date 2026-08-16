@@ -9,10 +9,10 @@
     <p class="field-error hidden" data-validate-for="menu_category_name"></p>
   </div>
 
-  <div class="mb-6 flex items-center gap-2">
-    <%= f.check_box :active, class: "size-5 border-4 border-ink rounded-none" %>
-    <%= f.label :active, "Visible en la carta", class: "field-label mb-0" %>
-  </div>
+  <label class="mb-6 flex items-center gap-3 min-h-12 -mx-2 px-2 cursor-pointer">
+    <%= f.check_box :active, class: "size-5 shrink-0 border-4 border-ink rounded-none" %>
+    <span class="field-label mb-0">Visible en la carta</span>
+  </label>
 
   <%= f.submit "Guardar categoría", class: "btn-primary w-full" %>
 <% end %>

@@ -17,7 +17,7 @@
     <%= button_to "Abrir mesa", open_dining_table_path(@dining_table), method: :post, class: "btn-primary" %>
   </div>
 <% else %>
-  <div class="grid lg:grid-cols-[1fr_380px] gap-6" data-controller="menu-search">
+  <div class="grid lg:grid-cols-[1fr_380px] gap-6 pb-20 lg:pb-0" data-controller="menu-search">
     <%# Selector de platos %>
     <div>
       <input type="text" placeholder="Buscar plato por nombre o categoría..."
@@ -43,7 +43,7 @@
     </div>
 
     <%# Cuenta de la mesa %>
-    <div class="nb-box p-5 h-fit lg:sticky lg:top-6">
+    <div id="order-summary" class="nb-box p-5 h-fit lg:sticky lg:top-6 scroll-mt-20">
       <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">
         Pedido #<%= @order.order_number %>
       </h2>
@@ -116,4 +116,13 @@
       </div>
     </div>
   </div>
+
+  <% if @order.order_items.any? %>
+    <%= link_to "#order-summary",
+          class: "flex lg:hidden fixed bottom-0 inset-x-0 z-30 items-center justify-between gap-3 px-4 py-3
+                   bg-ink text-paper border-t-4 border-ink min-h-14" do %>
+      <span class="text-sm font-bold uppercase tracking-wide"><%= pluralize(@order.order_items.sum(:quantity), "plato") %></span>
+      <span class="font-mono font-bold text-lg"><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+    <% end %>
+  <% end %>
 <% end %>

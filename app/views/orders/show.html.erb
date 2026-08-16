@@ -12,7 +12,8 @@
 </div>
 
 <div class="nb-box p-5 mb-6">
-  <table class="w-full text-sm">
+  <div class="overflow-x-auto">
+  <table class="w-full text-sm min-w-[420px]">
     <thead>
       <tr class="border-b-4 border-ink text-left uppercase text-xs tracking-widest">
         <th class="pb-2">Plato</th>
@@ -32,6 +33,7 @@
       <% end %>
     </tbody>
   </table>
+  </div>
 
   <div class="mt-4 pt-4 border-t-4 border-ink space-y-1 font-mono text-sm max-w-xs ml-auto">
     <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></span></div>

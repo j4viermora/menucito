@@ -16,15 +16,27 @@
 }
 
 @layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-display);
+    min-height: 100dvh;
   }
 
   ::selection {
     background-color: var(--color-ink);
     color: var(--color-yellow);
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
   }
 }
 
@@ -47,7 +59,7 @@
   .btn-danger,
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 border-4 border-ink rounded-none
-           font-display font-bold uppercase tracking-wide px-5 py-3 text-sm
+           font-display font-bold uppercase tracking-wide px-5 py-3 min-h-12 text-sm
            transition-transform duration-100 select-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-40;
   }
 
@@ -91,7 +103,7 @@
   }
 
   .field-input {
-    @apply w-full border-4 border-ink rounded-none px-3 py-2 bg-white font-display
+    @apply w-full border-4 border-ink rounded-none px-3 py-2 min-h-12 bg-white font-display text-base
            focus:outline-none focus:ring-0 focus:border-ink;
   }
 

@@ -15,6 +15,7 @@ export default class extends Controller {
   static targets = [
     "search", "card", "empty", "cartList", "cartEmpty", "subtotal", "discountRow",
     "discountAmount", "total", "cartItemsField", "discountSelect", "submit", "chargeBar",
+    "mobileBar", "mobileCount", "mobileTotal",
   ]
   static values = { currency: { type: String, default: "$" } }
 
@@ -85,6 +86,10 @@ export default class extends Controller {
     this.render()
   }
 
+  scrollToCart() {
+    document.getElementById("pos-cart-panel")?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
   render() {
     this.cartListTarget.innerHTML = ""
     const lines = Array.from(this.cart.values())
@@ -131,6 +136,12 @@ export default class extends Controller {
     const disabled = lines.length === 0
     this.submitTarget.disabled = disabled
     this.chargeBarTarget.classList.toggle("opacity-40", disabled)
+
+    const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0)
+    this.mobileCountTarget.textContent = itemCount
+    this.mobileTotalTarget.textContent = this.money(total)
+    this.mobileBarTarget.classList.toggle("hidden", lines.length === 0)
+    this.mobileBarTarget.classList.toggle("flex", lines.length !== 0)
   }
 
   money(n) {

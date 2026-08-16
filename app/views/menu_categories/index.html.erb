@@ -8,12 +8,12 @@
 <% else %>
   <div class="nb-box divide-y-4 divide-ink">
     <% @menu_categories.each do |category| %>
-      <div class="flex items-center justify-between p-4">
-        <div>
-          <p class="font-bold"><%= category.name %></p>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4">
+        <div class="min-w-0">
+          <p class="font-bold truncate"><%= category.name %></p>
           <p class="text-xs text-ink/60"><%= pluralize(category.menu_items.size, "plato") %> · <%= category.active? ? "Activa" : "Oculta" %></p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
           <%= link_to "Editar", edit_menu_category_path(category), class: "btn-secondary text-xs !px-3 !py-2" %>
           <%= button_to "Eliminar", menu_category_path(category), method: :delete,
                 form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar #{category.name}?",
