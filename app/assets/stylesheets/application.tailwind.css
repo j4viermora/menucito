@@ -4,7 +4,7 @@
   --font-display: "Space Grotesk", "Arial Black", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-  --color-ink: #0a0a0a;
+  --color-ink: #1c1c1c;
   --color-paper: #fdfbf3;
   --color-paper-dim: #f2efe2;
   --color-yellow: #ffe14d;
@@ -59,12 +59,12 @@
     transform: translate(3px, 3px);
   }
 
-  /* Primary: solid fill, big shadow — the ONE dominant action per view */
+  /* Primary: outline only (no black fill), big shadow — the ONE dominant action per view */
   .btn-primary {
-    @apply bg-ink text-yellow;
+    @apply bg-white text-ink;
     box-shadow: 5px 5px 0 0 var(--color-ink);
   }
-  .btn-primary:hover:not(:disabled) { box-shadow: 2px 2px 0 0 var(--color-ink); }
+  .btn-primary:hover:not(:disabled) { @apply bg-paper-dim; box-shadow: 2px 2px 0 0 var(--color-ink); }
   .btn-primary:active:not(:disabled) { box-shadow: 0 0 0 0 var(--color-ink); }
 
   /* Secondary: outline only, no shadow — always visually subordinate */

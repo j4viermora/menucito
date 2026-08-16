@@ -5,8 +5,8 @@
   </head>
 
   <body class="min-h-screen bg-paper text-ink">
-    <div class="flex min-h-screen flex-col md:flex-row">
-      <header class="md:w-56 shrink-0 border-b-4 md:border-b-0 md:border-r-4 border-ink bg-ink text-paper flex md:flex-col">
+    <div class="flex min-h-screen flex-col md:flex-row md:h-screen">
+      <header class="md:w-56 shrink-0 border-b-4 md:border-b-0 md:border-r-4 border-ink bg-ink text-paper flex md:flex-col md:h-screen md:overflow-hidden">
         <div class="p-4 border-b-4 border-paper/20">
           <%= link_to current_user.home_path, class: "font-display font-black text-xl tracking-tight text-yellow" do %>
             MENUCITO
@@ -14,7 +14,7 @@
           <p class="text-[11px] uppercase tracking-widest text-paper/60 mt-0.5"><%= current_restaurant&.name %></p>
         </div>
 
-        <nav class="flex md:flex-col flex-1 overflow-x-auto md:overflow-visible text-sm font-bold uppercase tracking-wide">
+        <nav class="flex md:flex-col flex-1 overflow-x-auto md:overflow-y-auto text-sm font-bold uppercase tracking-wide">
           <% if current_user.front_of_house? %>
             <%= render "shared/nav_link", label: "Ventas", path: pos_path, active: controller_name == "pos" %>
             <%= render "shared/nav_link", label: "Mesas", path: dining_tables_path, active: controller_name == "dining_tables" %>
@@ -41,7 +41,7 @@
         </div>
       </header>
 
-      <main class="flex-1 p-4 md:p-8 max-w-6xl">
+      <main class="flex-1 p-4 md:p-8 max-w-6xl md:h-screen md:overflow-y-auto">
         <%= render "shared/flashes" %>
         <%= yield %>
       </main>

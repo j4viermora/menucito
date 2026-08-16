@@ -1,2 +1,9 @@
 <h1 class="nb-heading text-2xl mb-6">Editar mesa <%= @dining_table.code %></h1>
 <%= render "form", dining_table: @dining_table %>
+
+<div class="max-w-md mt-4">
+  <%= button_to "Eliminar mesa", dining_table_path(@dining_table), method: :delete,
+        form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar mesa #{@dining_table.code}?",
+                        confirm_message_value: "Esta acción no se puede deshacer." } },
+        class: "btn-secondary w-full text-xs !text-red !border-red" %>
+</div>
