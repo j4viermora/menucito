@@ -5,8 +5,8 @@
   </head>
 
   <body class="min-h-screen bg-paper text-ink">
-    <div class="flex min-h-screen flex-col md:flex-row md:h-screen">
-      <header class="md:w-56 shrink-0 border-b-4 md:border-b-0 md:border-r-4 border-ink bg-ink text-paper flex md:flex-col md:h-screen md:overflow-hidden">
+    <div class="flex min-h-screen flex-col md:flex-row">
+      <header class="md:w-56 shrink-0 border-b-4 md:border-b-0 md:border-r-4 border-ink bg-ink text-paper flex md:flex-col md:h-screen md:sticky md:top-0 md:self-start md:overflow-hidden">
         <div class="p-4 border-b-4 border-paper/20">
           <%= link_to current_user.home_path, class: "font-display font-black text-xl tracking-tight text-yellow" do %>
             MENUCITO
@@ -40,11 +40,12 @@
                 class: "btn-secondary !bg-transparent !text-paper !border-paper w-full text-xs !py-2" %>
         </div>
       </header>
-
-      <main class="flex-1 p-4 md:p-8 max-w-6xl md:h-screen md:overflow-y-auto">
+      <div class="flex-1 p-4 md:p-8 max-w-6xl mx-auto">
         <%= render "shared/flashes" %>
+        <main class="md:overflow-y-auto">
         <%= yield %>
-      </main>
+        </main>
+      </div>
     </div>
   </body>
 </html>
