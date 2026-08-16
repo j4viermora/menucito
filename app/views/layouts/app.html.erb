@@ -8,20 +8,27 @@
     <div class="flex min-h-screen flex-col md:flex-row">
       <header class="md:w-56 shrink-0 border-b-4 md:border-b-0 md:border-r-4 border-ink bg-ink text-paper flex md:flex-col">
         <div class="p-4 border-b-4 border-paper/20">
-          <%= link_to pos_path, class: "font-display font-black text-xl tracking-tight text-yellow" do %>
+          <%= link_to current_user.home_path, class: "font-display font-black text-xl tracking-tight text-yellow" do %>
             MENUCITO
           <% end %>
           <p class="text-[11px] uppercase tracking-widest text-paper/60 mt-0.5"><%= current_restaurant&.name %></p>
         </div>
 
         <nav class="flex md:flex-col flex-1 overflow-x-auto md:overflow-visible text-sm font-bold uppercase tracking-wide">
-          <%= render "shared/nav_link", label: "Ventas", path: pos_path, active: controller_name == "pos" %>
-          <%= render "shared/nav_link", label: "Mesas", path: dining_tables_path, active: controller_name == "dining_tables" %>
-          <%= render "shared/nav_link", label: "Caja", path: cash_sessions_path, active: controller_name.in?(%w[cash_sessions cash_movements]) %>
-          <%= render "shared/nav_link", label: "Categorías", path: menu_categories_path, active: controller_name == "menu_categories" %>
-          <%= render "shared/nav_link", label: "Platos", path: menu_items_path, active: controller_name == "menu_items" %>
-          <%= render "shared/nav_link", label: "Descuentos", path: discounts_path, active: controller_name == "discounts" %>
-          <% if current_user&.can_manage_restaurant? %>
+          <% if current_user.front_of_house? %>
+            <%= render "shared/nav_link", label: "Ventas", path: pos_path, active: controller_name == "pos" %>
+            <%= render "shared/nav_link", label: "Mesas", path: dining_tables_path, active: controller_name == "dining_tables" %>
+          <% end %>
+          <% if current_user.kitchen_access? %>
+            <%= render "shared/nav_link", label: "Cocina", path: kitchen_path, active: controller_name == "kitchen" %>
+          <% end %>
+          <% if current_user.can_manage_cash? %>
+            <%= render "shared/nav_link", label: "Caja", path: cash_sessions_path, active: controller_name.in?(%w[cash_sessions cash_movements]) %>
+          <% end %>
+          <% if current_user.can_manage_restaurant? %>
+            <%= render "shared/nav_link", label: "Categorías", path: menu_categories_path, active: controller_name == "menu_categories" %>
+            <%= render "shared/nav_link", label: "Platos", path: menu_items_path, active: controller_name == "menu_items" %>
+            <%= render "shared/nav_link", label: "Descuentos", path: discounts_path, active: controller_name == "discounts" %>
             <%= render "shared/nav_link", label: "Usuarios", path: users_path, active: controller_name == "users" %>
           <% end %>
         </nav>

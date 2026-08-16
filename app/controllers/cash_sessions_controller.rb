@@ -1,4 +1,5 @@
 class CashSessionsController < AuthenticatedController
+  before_action { require_permission!(:can_manage_cash?) }
   before_action :set_cash_session, only: [ :show, :close ]
 
   def index

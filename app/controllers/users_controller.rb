@@ -1,5 +1,5 @@
 class UsersController < AuthenticatedController
-  before_action :require_manager
+  before_action { require_permission!(:can_manage_restaurant?) }
   before_action :set_user, only: [ :edit, :update, :destroy ]
 
   def index
@@ -42,11 +42,6 @@ class UsersController < AuthenticatedController
   end
 
   private
-
-  def require_manager
-    return if current_user.can_manage_restaurant?
-    redirect_to pos_path, alert: "No tienes permiso para gestionar usuarios."
-  end
 
   def set_user
     @user = current_restaurant.users.find(params[:id])

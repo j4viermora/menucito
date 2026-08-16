@@ -1,6 +1,8 @@
 <div class="flex items-center justify-between mb-6">
   <h1 class="nb-heading text-2xl">Mesas</h1>
-  <%= link_to "Nueva mesa", new_dining_table_path, class: "btn-primary text-xs" %>
+  <% if current_user.can_manage_restaurant? %>
+    <%= link_to "Nueva mesa", new_dining_table_path, class: "btn-primary text-xs" %>
+  <% end %>
 </div>
 
 <% if @dining_tables.empty? %>
@@ -34,11 +36,13 @@
 
         <div class="flex gap-2 flex-wrap">
           <%= link_to "QR", qr_dining_table_path(table), class: "btn-secondary text-xs !px-3 !py-2" %>
-          <%= link_to "Editar", edit_dining_table_path(table), class: "btn-secondary text-xs !px-3 !py-2" %>
-          <%= button_to "Eliminar", dining_table_path(table), method: :delete,
-                form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar mesa #{table.code}?",
-                                confirm_message_value: "Esta acción no se puede deshacer." } },
-                class: "btn-secondary text-xs !px-3 !py-2 !text-red !border-red" %>
+          <% if current_user.can_manage_restaurant? %>
+            <%= link_to "Editar", edit_dining_table_path(table), class: "btn-secondary text-xs !px-3 !py-2" %>
+            <%= button_to "Eliminar", dining_table_path(table), method: :delete,
+                  form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar mesa #{table.code}?",
+                                  confirm_message_value: "Esta acción no se puede deshacer." } },
+                  class: "btn-secondary text-xs !px-3 !py-2 !text-red !border-red" %>
+          <% end %>
         </div>
       </div>
     <% end %>

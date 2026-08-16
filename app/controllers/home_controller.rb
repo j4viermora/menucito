@@ -7,7 +7,7 @@ class HomeController < ApplicationController
 
     if restaurant
       ActsAsTenant.current_tenant = restaurant
-      redirect_to(user_signed_in? ? pos_path : new_user_session_path)
+      redirect_to(user_signed_in? ? current_user.home_path : new_user_session_path)
     else
       render :marketing, layout: "marketing"
     end

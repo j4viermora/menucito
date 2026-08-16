@@ -1,4 +1,5 @@
 class OrdersController < AuthenticatedController
+  before_action { require_permission!(:front_of_house?) }
   before_action :set_order
 
   layout false, only: [ :comanda ]

@@ -1,4 +1,5 @@
 class MenuCategoriesController < AuthenticatedController
+  before_action { require_permission!(:can_manage_restaurant?) }
   before_action :set_menu_category, only: [ :edit, :update, :destroy ]
 
   def index

@@ -13,4 +13,11 @@ class AuthenticatedController < ApplicationController
     sign_out(current_user)
     redirect_to new_user_session_path, alert: "Tu usuario no pertenece a este restaurante."
   end
+
+  # Call as a before_action with the permission method to check, e.g.
+  # `before_action { require_permission!(:front_of_house?) }`.
+  def require_permission!(predicate)
+    return if current_user.public_send(predicate)
+    redirect_to current_user.home_path, alert: "No tienes permiso para acceder a esta sección."
+  end
 end

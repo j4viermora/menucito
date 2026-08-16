@@ -1,4 +1,6 @@
 class PosController < AuthenticatedController
+  before_action { require_permission!(:front_of_house?) }
+
   def index
     @cash_session = current_restaurant.current_cash_session
     @categories = current_restaurant.menu_categories.active.ordered.includes(menu_items: :menu_category)

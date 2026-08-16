@@ -1,4 +1,5 @@
 class OrderItemsController < AuthenticatedController
+  before_action { require_permission!(:front_of_house?) }
   before_action :set_order
   before_action :ensure_order_editable
 

@@ -30,6 +30,10 @@ Rails.application.routes.draw do
   get "pos" => "pos#index", as: :pos
   post "pos" => "pos#create"
 
+  # Pantalla de cocina (comandas pendientes)
+  get "kitchen" => "kitchen#index", as: :kitchen
+  post "kitchen/order_items/:id/serve" => "kitchen#serve", as: :serve_kitchen_order_item
+
   resources :orders, only: [ :show, :update ] do
     member do
       get :comanda

@@ -12,7 +12,29 @@ class User < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  # Sells / serves tables: everyone except kitchen staff.
+  def front_of_house?
+    waiter? || cashier? || can_manage_restaurant?
+  end
+
+  # Opens/closes the register and records cash movements.
+  def can_manage_cash?
+    cashier? || can_manage_restaurant?
+  end
+
+  # Sees the kitchen display (pending/sent dishes).
+  def kitchen_access?
+    kitchen? || can_manage_restaurant?
+  end
+
+  # Menu, discounts, tables setup, and staff management.
   def can_manage_restaurant?
     admin? || owner?
+  end
+
+  # Where to land this user right after sign-in, or when they hit a page
+  # their role can't access.
+  def home_path
+    kitchen_access? && !front_of_house? ? Rails.application.routes.url_helpers.kitchen_path : Rails.application.routes.url_helpers.pos_path
   end
 end

@@ -17,6 +17,18 @@ ActsAsTenant.with_tenant(restaurant) do
     u.role = :cashier
   end
 
+  waiter = User.find_or_create_by!(email: "mesero@menucito.app") do |u|
+    u.name = "Wilson Mesero"
+    u.password = "password123"
+    u.role = :waiter
+  end
+
+  kitchen = User.find_or_create_by!(email: "cocina@menucito.app") do |u|
+    u.name = "Karla Cocina"
+    u.password = "password123"
+    u.role = :kitchen
+  end
+
   categories = {
     "Entradas" => [ [ "Patacones con hogao", 12000 ], [ "Empanadas x3", 9000 ] ],
     "Platos fuertes" => [ [ "Bandeja paisa", 32000 ], [ "Sancocho de gallina", 28000 ], [ "Pechuga a la plancha", 25000 ] ],
@@ -54,4 +66,6 @@ ActsAsTenant.with_tenant(restaurant) do
   puts "Demo restaurant ready -> subdomain: demo"
   puts "Owner: demo@menucito.app / password123"
   puts "Cashier: caja@menucito.app / password123"
+  puts "Waiter: mesero@menucito.app / password123"
+  puts "Kitchen: cocina@menucito.app / password123"
 end

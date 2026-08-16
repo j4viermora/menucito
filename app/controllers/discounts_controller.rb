@@ -1,4 +1,5 @@
 class DiscountsController < AuthenticatedController
+  before_action { require_permission!(:can_manage_restaurant?) }
   before_action :set_discount, only: [ :edit, :update, :destroy ]
 
   def index

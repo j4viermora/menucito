@@ -1,4 +1,6 @@
 class DiningTablesController < AuthenticatedController
+  before_action { require_permission!(:front_of_house?) }
+  before_action(only: [ :new, :create, :edit, :update, :destroy ]) { require_permission!(:can_manage_restaurant?) }
   before_action :set_dining_table, only: [ :show, :edit, :update, :destroy, :qr, :open ]
 
   def index
