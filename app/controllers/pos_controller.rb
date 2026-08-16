@@ -1,5 +1,5 @@
 class PosController < AuthenticatedController
-  before_action { require_permission!(:front_of_house?) }
+  before_action { require_permission!(:can_sell_at_counter?) }
 
   def index
     @cash_session = current_restaurant.current_cash_session

@@ -38,8 +38,10 @@
         </div>
 
         <nav class="flex flex-col flex-1 overflow-y-auto text-base font-bold uppercase tracking-wide">
-          <% if current_user.front_of_house? %>
+          <% if current_user.can_sell_at_counter? %>
             <%= render "shared/nav_link", label: "Ventas", path: pos_path, active: controller_name == "pos" %>
+          <% end %>
+          <% if current_user.front_of_house? %>
             <%= render "shared/nav_link", label: "Mesas", path: dining_tables_path, active: controller_name == "dining_tables" %>
           <% end %>
           <% if current_user.kitchen_access? %>
@@ -74,8 +76,10 @@
         </div>
 
         <nav class="flex flex-col flex-1 overflow-y-auto text-sm font-bold uppercase tracking-wide">
-          <% if current_user.front_of_house? %>
+          <% if current_user.can_sell_at_counter? %>
             <%= render "shared/nav_link", label: "Ventas", path: pos_path, active: controller_name == "pos" %>
+          <% end %>
+          <% if current_user.front_of_house? %>
             <%= render "shared/nav_link", label: "Mesas", path: dining_tables_path, active: controller_name == "dining_tables" %>
           <% end %>
           <% if current_user.kitchen_access? %>
