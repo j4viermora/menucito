@@ -24,3 +24,9 @@ application.register("cash-close", CashCloseController)
 
 import MenuSearchController from "./menu_search_controller"
 application.register("menu-search", MenuSearchController)
+
+import MobileNavController from "./mobile_nav_controller"
+application.register("mobile-nav", MobileNavController)
+
+import SlugSuggestController from "./slug_suggest_controller"
+application.register("slug-suggest", SlugSuggestController)

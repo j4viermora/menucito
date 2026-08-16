@@ -5,7 +5,7 @@ class SignupsController < ApplicationController
 
   def new
     @restaurant = Restaurant.new
-    @user = User.new
+    ActsAsTenant.without_tenant { @user = User.new }
   end
 
   def create
@@ -20,9 +20,9 @@ class SignupsController < ApplicationController
     end
 
     redirect_to root_url(subdomain: @restaurant.subdomain, host: request.domain, port: request.port),
-      notice: "¡Restaurante creado! Inicia sesión con tu correo y contraseña."
+      allow_other_host: true, notice: "¡Restaurante creado! Inicia sesión con tu correo y contraseña."
   rescue ActiveRecord::RecordInvalid
-    @user ||= User.new(user_params)
+    ActsAsTenant.without_tenant { @user ||= User.new(user_params) }
     render :new, status: :unprocessable_entity
   end
 

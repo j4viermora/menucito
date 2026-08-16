@@ -5,12 +5,16 @@
   <%= render "shared/error_messages", resource: @restaurant %>
   <%= render "shared/error_messages", resource: @user %>
 
+  <%# The redirect on success lands on a different subdomain (a different
+      origin). Turbo submits via fetch, which can't follow a cross-origin
+      redirect, so this form opts out of Turbo and does a real page submit. %>
   <%= form_with model: @restaurant, url: signup_path, scope: :restaurant, method: :post,
-        data: { controller: "validate", action: "submit->validate#submit" } do |f| %>
+        data: { controller: "validate slug-suggest", action: "submit->validate#submit", turbo: false } do |f| %>
     <div class="mb-4">
       <%= f.label :name, "Nombre del restaurante", class: "field-label" %>
       <%= f.text_field :name, id: "restaurant_name", class: "field-input",
-            data: { validate_target: "field", validate_rule: "required", action: "blur->validate#check" } %>
+            data: { validate_target: "field", validate_rule: "required", slug_suggest_target: "source",
+                     action: "blur->validate#check input->slug-suggest#suggest" } %>
       <p class="field-error hidden" data-validate-for="restaurant_name"></p>
     </div>
 
@@ -19,11 +23,12 @@
       <div class="flex items-stretch">
         <%= f.text_field :subdomain, id: "restaurant_subdomain", class: "field-input border-r-0",
               data: { validate_target: "field", validate_rule: "required,minlength:3",
-                       validate_message: "Usa al menos 3 caracteres", action: "blur->validate#check" } %>
+                       validate_message: "Usa al menos 3 caracteres", slug_suggest_target: "output",
+                       action: "blur->validate#check input->slug-suggest#markEdited" } %>
         <span class="border-4 border-ink bg-paper-dim px-3 flex items-center text-sm font-mono">.menucito.app</span>
       </div>
       <p class="field-error hidden" data-validate-for="restaurant_subdomain"></p>
-      <p class="field-hint">Solo minúsculas, números y guiones.</p>
+      <p class="field-hint">Solo minúsculas, números y guiones. Se sugiere según el nombre.</p>
     </div>
 
     <hr class="border-t-4 border-ink mb-6">

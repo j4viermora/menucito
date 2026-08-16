@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_15_215442) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_16_190229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -180,7 +180,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_215442) do
   create_table "restaurants", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
-    t.string "currency", default: "COP", null: false
+    t.string "currency", default: "USD", null: false
     t.string "name", null: false
     t.string "slug", null: false
     t.string "subdomain", null: false
