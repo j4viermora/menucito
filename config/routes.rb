@@ -13,7 +13,10 @@ Rails.application.routes.draw do
   resource :signup, only: [ :new, :create ], controller: "signups"
 
   resources :dining_tables do
-    member { get :qr }
+    member do
+      get :qr
+      post :open
+    end
   end
 
   resources :menu_categories
@@ -34,6 +37,7 @@ Rails.application.routes.draw do
       post :pay
       post :cancel
     end
+    resources :order_items, only: [ :create, :update, :destroy ]
   end
 
   resources :cash_sessions, only: [ :new, :create, :show, :index ] do

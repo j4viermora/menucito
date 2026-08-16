@@ -1,11 +1,34 @@
 class DiningTablesController < AuthenticatedController
-  before_action :set_dining_table, only: [ :show, :edit, :update, :destroy, :qr ]
+  before_action :set_dining_table, only: [ :show, :edit, :update, :destroy, :qr, :open ]
 
   def index
     @dining_tables = current_restaurant.dining_tables.ordered
   end
 
   def show
+    @order = @dining_table.open_order
+    @menu_items = current_restaurant.menu_items.available.ordered
+    @discounts = current_restaurant.discounts.active.ordered
+  end
+
+  def open
+    unless current_restaurant.current_cash_session
+      redirect_to dining_tables_path, alert: "Debes abrir la caja antes de atender mesas."
+      return
+    end
+
+    if @dining_table.open_order.nil?
+      order = current_restaurant.orders.create!(
+        dining_table: @dining_table,
+        order_type: :table_service,
+        status: :open,
+        created_by: current_user,
+        cash_session: current_restaurant.current_cash_session
+      )
+      @dining_table.update!(status: :occupied)
+    end
+
+    redirect_to dining_table_path(@dining_table)
   end
 
   def new

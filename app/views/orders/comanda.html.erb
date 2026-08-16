@@ -22,6 +22,14 @@
       .notes { font-size: 11px; color: #444; padding-left: 24px; }
       .total { font-weight: bold; font-size: 14px; text-align: right; margin-top: 8px; }
       .center { text-align: center; }
+      .no-print {
+        font-family: "Space Grotesk", sans-serif;
+        display: block;
+        text-align: center;
+        margin-top: 16px;
+        text-decoration: underline;
+      }
+      @media print { .no-print { display: none; } }
     </style>
   </head>
   <body onload="window.print()">
@@ -54,5 +62,11 @@
     <% end %>
 
     <p class="center muted">Pedido por <%= @order.created_by.name %></p>
+
+    <% if @order.dining_table %>
+      <a class="no-print" href="<%= dining_table_path(@order.dining_table) %>">Volver a la mesa</a>
+    <% else %>
+      <a class="no-print" href="<%= order_path(@order) %>">Volver al pedido</a>
+    <% end %>
   </body>
 </html>

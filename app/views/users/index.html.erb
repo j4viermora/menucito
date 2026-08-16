@@ -11,7 +11,7 @@
         <p class="text-xs text-ink/60"><%= user.email %></p>
       </div>
       <div class="flex items-center gap-2">
-        <span class="badge badge-outline"><%= user.role %></span>
+        <span class="badge badge-outline"><%= role_label(user.role) %></span>
         <span class="badge <%= user.active? ? 'badge-mint' : 'badge-outline' %>"><%= user.active? ? "Activo" : "Inactivo" %></span>
         <%= link_to "Editar", edit_user_path(user), class: "btn-secondary text-xs !px-3 !py-2" %>
         <% unless user == current_user %>

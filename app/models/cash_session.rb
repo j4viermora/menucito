@@ -27,6 +27,18 @@ class CashSession < ApplicationRecord
     payments.where(method: :cash).sum(:amount)
   end
 
+  def sold_orders
+    Order.where(id: payments.select(:order_id)).includes(order_items: :menu_item).order(:order_number)
+  end
+
+  # Aggregated "what did I sell" breakdown by dish, for the closing report.
+  def sales_summary
+    items = sold_orders.flat_map(&:order_items)
+    items.group_by { |item| item.menu_item.name }.map do |name, group|
+      { name: name, quantity: group.sum(&:quantity), total: group.sum(&:line_total) }
+    end.sort_by { |row| -row[:total] }
+  end
+
   def calculated_expected_amount
     opening_amount + cash_payments_total + movements_total
   end

@@ -18,7 +18,7 @@
 
   <div class="mb-4">
     <%= f.label :role, "Rol", class: "field-label" %>
-    <%= f.select :role, User.roles.keys.map { |k| [ k.humanize, k ] }, {}, class: "field-input" %>
+    <%= f.select :role, User.roles.keys.map { |k| [ role_label(k), k ] }, {}, class: "field-input" %>
   </div>
 
   <div class="mb-4">

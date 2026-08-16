@@ -95,3 +95,49 @@
     <% end %>
   </div>
 </div>
+
+<div class="grid md:grid-cols-2 gap-6 mt-6">
+  <div>
+    <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">Qué se vendió (por plato)</h2>
+    <div class="nb-box divide-y-2 divide-ink">
+      <% if @sales_summary.empty? %>
+        <p class="p-4 text-sm text-ink/60">Aún no hay ventas en este turno.</p>
+      <% else %>
+        <div class="flex items-center justify-between p-3 text-xs font-bold uppercase tracking-widest text-ink/60">
+          <span>Plato</span>
+          <span>Cant. · Total</span>
+        </div>
+        <% @sales_summary.each do |row| %>
+          <div class="flex items-center justify-between p-3 text-sm">
+            <span class="font-bold"><%= row[:name] %></span>
+            <span class="font-mono">
+              <%= row[:quantity] %>x · <%= number_to_currency(row[:total], unit: current_restaurant.currency + " ", precision: 0) %>
+            </span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">Ventas del turno (<%= @sold_orders.size %>)</h2>
+    <div class="nb-box divide-y-2 divide-ink max-h-96 overflow-y-auto">
+      <% if @sold_orders.empty? %>
+        <p class="p-4 text-sm text-ink/60">Aún no hay ventas en este turno.</p>
+      <% else %>
+        <% @sold_orders.each do |order| %>
+          <%= link_to order_path(order), class: "flex items-center justify-between p-3 text-sm hover:bg-paper-dim" do %>
+            <div>
+              <p class="font-bold">#<%= order.order_number %></p>
+              <p class="text-xs text-ink/60">
+                <%= order.dining_table ? "Mesa #{order.dining_table.code}" : "Mostrador" %> ·
+                <%= order.order_items.sum(&:quantity) %> platos
+              </p>
+            </div>
+            <span class="font-mono font-bold"><%= number_to_currency(order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

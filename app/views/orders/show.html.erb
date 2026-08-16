@@ -7,7 +7,7 @@
     </p>
   </div>
   <span class="badge <%= { "open" => "badge-outline", "sent_to_kitchen" => "badge-yellow", "served" => "badge-mint", "paid" => "badge-mint", "cancelled" => "badge-red" }[@order.status] %>">
-    <%= @order.status.humanize %>
+    <%= { "open" => "Abierto", "sent_to_kitchen" => "En cocina", "served" => "Servido", "paid" => "Pagado", "cancelled" => "Cancelado" }[@order.status] %>
   </span>
 </div>
 

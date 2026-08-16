@@ -21,3 +21,6 @@ application.register("pos-cart", PosCartController)
 
 import CashCloseController from "./cash_close_controller"
 application.register("cash-close", CashCloseController)
+
+import MenuSearchController from "./menu_search_controller"
+application.register("menu-search", MenuSearchController)

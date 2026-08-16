@@ -1,0 +1,119 @@
+<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+  <div>
+    <h1 class="nb-heading text-2xl">Mesa <%= @dining_table.code %></h1>
+    <p class="text-sm text-ink/60"><%= @dining_table.capacity %> personas</p>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="badge <%= { "free" => "badge-mint", "occupied" => "badge-yellow", "reserved" => "badge-outline", "closing" => "badge-pink" }[@dining_table.status] %>">
+      <%= { "free" => "Libre", "occupied" => "Ocupada", "reserved" => "Reservada", "closing" => "Por cerrar" }[@dining_table.status] %>
+    </span>
+    <%= link_to "Volver a mesas", dining_tables_path, class: "btn-secondary text-xs" %>
+  </div>
+</div>
+
+<% if @order.nil? %>
+  <div class="nb-box p-8 text-center">
+    <p class="text-ink/60 mb-4">Esta mesa está libre. Ábrela para empezar a tomar el pedido.</p>
+    <%= button_to "Abrir mesa", open_dining_table_path(@dining_table), method: :post, class: "btn-primary" %>
+  </div>
+<% else %>
+  <div class="grid lg:grid-cols-[1fr_380px] gap-6" data-controller="menu-search">
+    <%# Selector de platos %>
+    <div>
+      <input type="text" placeholder="Buscar plato por nombre o categoría..."
+        class="field-input mb-4" data-menu-search-target="search" data-action="input->menu-search#filter"
+        aria-label="Buscar plato">
+
+      <p data-menu-search-target="empty" class="hidden nb-box-sm p-6 text-center text-ink/60 mb-4">
+        No encontramos platos con ese nombre.
+      </p>
+
+      <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
+        <% @menu_items.each do |item| %>
+          <div class="nb-box-sm p-3 flex flex-col" data-menu-search-target="card"
+               data-name="<%= item.name %>" data-category="<%= item.menu_category.name %>">
+            <span class="badge badge-outline w-fit mb-2 text-[10px]"><%= item.menu_category.name %></span>
+            <p class="font-bold text-sm mb-1"><%= item.name %></p>
+            <p class="font-mono font-bold text-base mb-3"><%= item.formatted_price %></p>
+            <%= button_to "Agregar", order_order_items_path(@order, menu_item_id: item.id, quantity: 1), method: :post,
+                  class: "btn-primary text-xs mt-auto w-full !py-2" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <%# Cuenta de la mesa %>
+    <div class="nb-box p-5 h-fit lg:sticky lg:top-6">
+      <h2 class="font-display font-bold uppercase text-sm tracking-widest mb-3">
+        Pedido #<%= @order.order_number %>
+      </h2>
+
+      <% if @order.order_items.empty? %>
+        <p class="text-sm text-ink/60 py-6 text-center">Agrega platos desde la izquierda.</p>
+      <% else %>
+        <div class="mb-4 divide-y-2 divide-ink">
+          <% @order.order_items.includes(:menu_item).order(:created_at).each do |item| %>
+            <div class="flex items-center justify-between gap-2 py-2">
+              <div class="min-w-0">
+                <p class="font-bold text-sm truncate">
+                  <%= item.quantity %>x <%= item.menu_item.name %>
+                </p>
+                <span class="badge <%= item.pending? ? 'badge-yellow' : 'badge-mint' %> text-[10px] mt-1">
+                  <%= { "pending" => "Por enviar", "printed" => "En cocina", "served" => "Servido" }[item.status] %>
+                </span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="font-mono font-bold text-sm"><%= number_to_currency(item.line_total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+                <% if item.pending? %>
+                  <%= button_to "×", order_order_item_path(@order, item), method: :delete,
+                        class: "btn-ghost !px-2 !py-1 text-red" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if @discounts.any? %>
+        <%= form_with model: @order, url: order_path(@order), method: :patch, class: "mb-4", data: { controller: "combobox" } do |f| %>
+          <label class="field-label">Descuento (opcional)</label>
+          <div class="flex gap-2">
+            <%= f.collection_select :discount_id, @discounts, :id, :name, { include_blank: "Sin descuento" }, data: { combobox_target: "select" } %>
+            <%= f.submit "Aplicar", class: "btn-secondary text-xs !px-3" %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div class="border-t-4 border-ink pt-3 space-y-1 mb-4 font-mono text-sm">
+        <div class="flex justify-between"><span>Subtotal</span><span><%= number_to_currency(@order.subtotal, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+        <% if @order.discount_amount.to_f > 0 %>
+          <div class="flex justify-between"><span>Descuento</span><span>-<%= number_to_currency(@order.discount_amount, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+        <% end %>
+        <div class="flex justify-between font-bold text-lg pt-1 border-t-2 border-ink">
+          <span>Total</span><span><%= number_to_currency(@order.total, unit: current_restaurant.currency + " ", precision: 0) %></span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <%= button_to "Enviar a cocina", send_to_kitchen_order_path(@order), method: :post, class: "btn-primary w-full" %>
+
+        <%= form_with url: pay_order_path(@order), method: :post,
+              data: { controller: "confirm", confirm_title_value: "¿Cobrar y cerrar la mesa #{@dining_table.code}?",
+                      confirm_message_value: "Se registrará el pago y la mesa quedará libre para nuevos clientes.",
+                      confirm_confirm_label_value: "Sí, cobrar" } do %>
+          <select name="payment_method" class="field-input mb-2">
+            <option value="cash">Efectivo</option>
+            <option value="card">Tarjeta</option>
+            <option value="transfer">Transferencia</option>
+          </select>
+          <button type="submit" class="btn-danger w-full">Cobrar y cerrar mesa</button>
+        <% end %>
+
+        <%= button_to "Cancelar pedido", cancel_order_path(@order), method: :post,
+              form: { data: { controller: "confirm", confirm_title_value: "¿Cancelar este pedido?",
+                              confirm_message_value: "Se liberará la mesa sin cobrar nada." } },
+              class: "btn-secondary w-full text-xs !text-red !border-red" %>
+      </div>
+    </div>
+  </div>
+<% end %>

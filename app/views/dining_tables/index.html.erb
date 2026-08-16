@@ -15,13 +15,21 @@
             <p class="font-display font-black text-2xl"><%= table.code %></p>
             <p class="text-xs text-ink/60 uppercase tracking-widest"><%= table.capacity %> personas</p>
           </div>
-          <span class="badge <%= status_style %>"><%= t("dining_table.status.#{table.status}", default: table.status) %></span>
+          <span class="badge <%= status_style %>">
+            <%= { "free" => "Libre", "occupied" => "Ocupada", "reserved" => "Reservada", "closing" => "Por cerrar" }[table.status] %>
+          </span>
         </div>
 
         <% if (order = table.open_order) %>
-          <%= link_to order, class: "block nb-box-sm p-2 mb-3 bg-paper-dim text-xs" do %>
+          <div class="nb-box-sm p-2 mb-3 bg-paper-dim text-xs">
             Pedido #<%= order.order_number %> · <%= number_to_currency(order.total, unit: current_restaurant.currency + " ", precision: 0) %>
-          <% end %>
+          </div>
+        <% end %>
+
+        <% if table.free? %>
+          <%= button_to "Abrir mesa", open_dining_table_path(table), method: :post, class: "btn-primary w-full text-xs mb-2" %>
+        <% else %>
+          <%= link_to "Ver mesa", dining_table_path(table), class: "btn-primary w-full text-xs mb-2 block text-center" %>
         <% end %>
 
         <div class="flex gap-2 flex-wrap">

@@ -35,6 +35,8 @@ class CashSessionsController < AuthenticatedController
 
   def show
     @cash_movements = @cash_session.cash_movements.recent
+    @sales_summary = @cash_session.sales_summary
+    @sold_orders = @cash_session.sold_orders
   end
 
   def close

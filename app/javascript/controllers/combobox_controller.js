@@ -22,6 +22,12 @@ export default class extends Controller {
   }
 
   buildInput() {
+    // Anchor to the select's own parent, not the controller root — the
+    // select isn't always a direct child of the element carrying
+    // data-controller="combobox" (e.g. when it sits next to a submit button).
+    this.anchor = this.selectTarget.parentElement
+    this.anchor.style.position = "relative"
+
     const input = document.createElement("input")
     input.type = "text"
     input.className = "field-input"
@@ -32,7 +38,7 @@ export default class extends Controller {
     input.addEventListener("input", () => this.filter(input.value))
     input.addEventListener("focus", () => this.openList())
     input.addEventListener("keydown", (e) => this.onKeydown(e))
-    this.element.insertBefore(input, this.selectTarget)
+    this.anchor.insertBefore(input, this.selectTarget)
     this.input = input
   }
 
@@ -40,8 +46,7 @@ export default class extends Controller {
     const list = document.createElement("ul")
     list.className = "nb-box-sm absolute z-20 mt-1 max-h-64 w-full overflow-y-auto bg-white hidden"
     list.setAttribute("role", "listbox")
-    this.element.style.position = "relative"
-    this.element.appendChild(list)
+    this.anchor.appendChild(list)
     this.list = list
     this.activeIndex = -1
 

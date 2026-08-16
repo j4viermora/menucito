@@ -9,20 +9,31 @@ class OrdersController < AuthenticatedController
   def update
     if @order.update(order_params)
       @order.recalculate_totals!
-      redirect_to @order, notice: "Pedido actualizado."
+      redirect_to (@order.dining_table ? dining_table_path(@order.dining_table) : order_path(@order)), notice: "Pedido actualizado."
     else
       render :show, status: :unprocessable_entity
     end
   end
 
   def comanda
-    @order_items = @order.order_items.includes(:menu_item)
+    @order_items = if params[:only].present?
+      @order.order_items.where(id: params[:only].split(","))
+    else
+      @order.order_items
+    end.includes(:menu_item)
   end
 
   def send_to_kitchen
-    @order.update!(status: :sent_to_kitchen)
-    @order.order_items.update_all(status: :printed)
-    redirect_to comanda_order_path(@order)
+    pending_ids = @order.order_items.pending.pluck(:id)
+
+    if pending_ids.empty?
+      redirect_to (@order.dining_table ? dining_table_path(@order.dining_table) : @order), alert: "No hay platos nuevos para enviar a cocina."
+      return
+    end
+
+    @order.order_items.where(id: pending_ids).update_all(status: :printed)
+    @order.update!(status: :sent_to_kitchen) if @order.open?
+    redirect_to comanda_order_path(@order, only: pending_ids.join(","))
   end
 
   def pay
@@ -34,6 +45,7 @@ class OrdersController < AuthenticatedController
         amount: @order.total
       )
       @order.update!(status: :paid)
+      @order.dining_table&.update!(status: :free)
     end
     redirect_to @order, notice: "Pedido pagado."
   end
