@@ -1,7 +1,12 @@
-<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+<%= render "shared/back_button", fallback: cash_sessions_path %>
+
+<div class="flex items-start justify-between mb-6 mt-3 flex-wrap gap-3">
   <div>
     <h1 class="nb-heading text-2xl">Caja del <%= @cash_session.opened_at.strftime("%d/%m/%Y") %></h1>
     <p class="text-sm text-ink/60">Abierta por <%= @cash_session.opened_by.name %> a las <%= @cash_session.opened_at.strftime("%H:%M") %></p>
+    <% if @cash_session.closed? %>
+      <p class="text-sm text-ink/60">Cerrada por <%= @cash_session.closed_by&.name %> a las <%= @cash_session.closed_at&.strftime("%H:%M") %></p>
+    <% end %>
   </div>
   <span class="badge <%= @cash_session.open? ? 'badge-mint' : 'badge-outline' %>"><%= @cash_session.open? ? "Abierta" : "Cerrada" %></span>
 </div>
@@ -11,6 +16,8 @@
     <div class="nb-box p-5 mb-6 font-mono text-sm space-y-1">
       <div class="flex justify-between"><span>Monto inicial</span><span><%= number_to_currency(@cash_session.opening_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
       <div class="flex justify-between"><span>Ventas en efectivo</span><span><%= number_to_currency(@cash_session.cash_payments_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Ventas en tarjeta</span><span><%= number_to_currency(@cash_session.card_payments_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
+      <div class="flex justify-between"><span>Ventas en transferencia</span><span><%= number_to_currency(@cash_session.transfer_payments_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
       <div class="flex justify-between"><span>Movimientos (ingresos - egresos)</span><span><%= number_to_currency(@cash_session.movements_total.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span></div>
       <div class="flex justify-between font-bold text-base pt-2 border-t-2 border-ink">
         <span>Esperado en caja</span><span><%= number_to_currency(@cash_session.calculated_expected_amount.to_f, unit: current_restaurant.currency + " ", precision: 0) %></span>
@@ -87,10 +94,9 @@
           <button type="submit" class="btn-danger w-full">Cerrar caja</button>
         <% end %>
       </div>
-    <% else %>
+    <% elsif @cash_session.notes.present? %>
       <div class="nb-box p-5">
-        <p class="text-sm text-ink/60">Cerrada por <%= @cash_session.closed_by&.name %> el <%= @cash_session.closed_at&.strftime("%d/%m/%Y %H:%M") %>.</p>
-        <% if @cash_session.notes.present? %><p class="text-sm mt-2">"<%= @cash_session.notes %>"</p><% end %>
+        <p class="text-sm">"<%= @cash_session.notes %>"</p>
       </div>
     <% end %>
   </div>

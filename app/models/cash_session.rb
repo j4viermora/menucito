@@ -34,6 +34,14 @@ class CashSession < ApplicationRecord
     Money.new(payments.where(method: :cash).sum(:amount_cents), currency)
   end
 
+  def card_payments_total
+    Money.new(payments.where(method: :card).sum(:amount_cents), currency)
+  end
+
+  def transfer_payments_total
+    Money.new(payments.where(method: :transfer).sum(:amount_cents), currency)
+  end
+
   def sold_orders
     Order.where(id: payments.select(:order_id)).includes(order_items: :menu_item).order(:order_number)
   end

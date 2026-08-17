@@ -14,12 +14,6 @@
         <span class="badge badge-outline"><%= role_label(user.role) %></span>
         <span class="badge <%= user.active? ? 'badge-mint' : 'badge-outline' %>"><%= user.active? ? "Activo" : "Inactivo" %></span>
         <%= link_to "Editar", edit_user_path(user), class: "btn-secondary text-xs !px-3 !py-2" %>
-        <% unless user == current_user %>
-          <%= button_to "Eliminar", user_path(user), method: :delete,
-                form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar a #{user.name}?",
-                                confirm_message_value: "Perderá acceso al panel inmediatamente." } },
-                class: "btn-secondary text-xs !px-3 !py-2 !text-red !border-red" %>
-        <% end %>
       </div>
     </div>
   <% end %>

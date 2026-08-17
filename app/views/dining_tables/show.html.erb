@@ -1,4 +1,6 @@
-<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+<%= render "shared/back_button", fallback: dining_tables_path %>
+
+<div class="flex items-start justify-between mb-6 mt-3 flex-wrap gap-3">
   <div>
     <h1 class="nb-heading text-2xl">Mesa <%= @dining_table.code %></h1>
     <p class="text-sm text-ink/60"><%= @dining_table.capacity %> personas</p>

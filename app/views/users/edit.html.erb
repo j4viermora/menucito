@@ -1,2 +1,12 @@
-<h1 class="nb-heading text-2xl mb-6">Editar usuario</h1>
+<%= render "shared/back_button", fallback: users_path %>
+
+<h1 class="nb-heading text-2xl mb-6 mt-3">Editar usuario</h1>
 <%= render "form", user: @user %>
+<div class="mt-6">
+<% unless @user == current_user %>
+          <%= button_to "Eliminar", user_path(@user), method: :delete,
+                form: { data: { controller: "confirm", confirm_title_value: "¿Eliminar a #{@user.name}?",
+                                confirm_message_value: "Perderá acceso al panel inmediatamente." } },
+                class: "btn-secondary text-xs !px-3 !py-2 !text-red !border-red" %>
+<% end %>
+</div>

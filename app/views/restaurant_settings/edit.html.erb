@@ -1,4 +1,28 @@
-<h1 class="nb-heading text-2xl mb-6">Ajustes del restaurante</h1>
+<%= render "shared/back_button", fallback: root_path %>
+
+<h1 class="nb-heading text-2xl mb-6 mt-3">Ajustes del restaurante</h1>
+
+<div class="nb-box p-6 max-w-lg mb-6">
+  <h2 class="nb-heading text-lg mb-4">Datos del restaurante</h2>
+  <dl class="space-y-3">
+    <div class="flex justify-between gap-4">
+      <dt class="field-label mb-0">Nombre</dt>
+      <dd><%= @restaurant.name %></dd>
+    </div>
+    <div class="flex justify-between gap-4">
+      <dt class="field-label mb-0">Subdominio</dt>
+      <dd><%= @restaurant.subdomain %></dd>
+    </div>
+    <div class="flex justify-between gap-4">
+      <dt class="field-label mb-0">Moneda</dt>
+      <dd><%= @restaurant.currency %></dd>
+    </div>
+    <div class="flex justify-between gap-4">
+      <dt class="field-label mb-0">Zona horaria</dt>
+      <dd><%= @restaurant.timezone %></dd>
+    </div>
+  </dl>
+</div>
 
 <div class="nb-box p-6 max-w-lg">
   <%= form_with model: @restaurant, url: restaurant_settings_path, method: :patch do |f| %>
