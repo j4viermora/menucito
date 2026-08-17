@@ -63,6 +63,10 @@
           <p class="font-bold"><%= current_user&.name %></p>
           <p class="text-paper/60 uppercase tracking-widest mb-3"><%= role_label(current_user.role) if current_user %></p>
           <%= button_to "Salir", destroy_user_session_path, method: :delete,
+                form: { data: { controller: "confirm", turbo: false,
+                                confirm_title_value: "¿Cerrar sesión?",
+                                confirm_message_value: "Vas a salir de #{current_restaurant&.name}.",
+                                confirm_confirm_label_value: "Sí, salir" } },
                 class: "btn-secondary !bg-transparent !text-paper !border-paper w-full !py-3" %>
         </div>
       </div>
@@ -102,6 +106,10 @@
           <p class="font-bold"><%= current_user&.name %></p>
           <p class="text-paper/60 uppercase tracking-widest mb-2"><%= role_label(current_user.role) if current_user %></p>
           <%= button_to "Salir", destroy_user_session_path, method: :delete,
+                form: { data: { controller: "confirm", turbo: false,
+                                confirm_title_value: "¿Cerrar sesión?",
+                                confirm_message_value: "Vas a salir de #{current_restaurant&.name}.",
+                                confirm_confirm_label_value: "Sí, salir" } },
                 class: "btn-secondary !bg-transparent !text-paper !border-paper w-full text-xs !py-2" %>
         </div>
       </header>
