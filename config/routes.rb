@@ -34,6 +34,7 @@ Rails.application.routes.draw do
 
   # Pantalla de cocina (comandas pendientes)
   get "kitchen" => "kitchen#index", as: :kitchen
+  get "kitchen/history" => "kitchen#history", as: :history_kitchen
   post "kitchen/order_items/:id/serve" => "kitchen#serve", as: :serve_kitchen_order_item
 
   resources :orders, only: [ :show, :update ] do

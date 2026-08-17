@@ -64,9 +64,9 @@
     <p class="center muted">Pedido por <%= @order.created_by.name %></p>
 
     <% if @order.dining_table %>
-      <a class="no-print" href="<%= dining_table_path(@order.dining_table) %>">Volver a la mesa</a>
+      <a class="no-print" href="<%= dining_table_path(@order.dining_table) %>" onclick="location.replace(this.href); return false;">Volver a la mesa</a>
     <% else %>
-      <a class="no-print" href="<%= order_path(@order) %>">Volver al pedido</a>
+      <a class="no-print" href="<%= order_path(@order) %>" onclick="location.replace(this.href); return false;">Volver al pedido</a>
     <% end %>
   </body>
 </html>

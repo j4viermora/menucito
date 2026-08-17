@@ -46,7 +46,7 @@ class PosController < AuthenticatedController
       @order.update!(status: :paid)
     end
 
-    redirect_to comanda_order_path(@order), notice: "Venta ##{@order.order_number} registrada."
+    redirect_to order_path(@order, prompt_print: true), notice: "Venta ##{@order.order_number} registrada."
   rescue ActiveRecord::RecordInvalid, JSON::ParserError => e
     redirect_to pos_path, alert: "No se pudo registrar la venta: #{e.message}"
   end

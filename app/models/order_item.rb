@@ -13,6 +13,12 @@ class OrderItem < ApplicationRecord
   validates :quantity, numericality: { greater_than: 0 }
   validates :unit_price, numericality: { greater_than_or_equal_to: 0 }
 
+  # Visible on the kitchen display: not yet served, and belonging to an
+  # order that's still active (not paid/cancelled).
+  scope :kitchen_visible, -> {
+    where(status: [ :pending, :printed ]).joins(:order).where(orders: { status: [ :open, :sent_to_kitchen, :served ] })
+  }
+
   before_validation :assign_unit_price, on: :create
 
   def line_total

@@ -17,6 +17,7 @@ class OrderItemsController < AuthenticatedController
     end
 
     @order.recalculate_totals!
+    KitchenBroadcast.sync(current_restaurant)
     redirect_to dining_table_path(@order.dining_table)
   end
 
@@ -24,6 +25,7 @@ class OrderItemsController < AuthenticatedController
     item = @order.order_items.pending.find(params[:id])
     item.destroy
     @order.recalculate_totals!
+    KitchenBroadcast.sync(current_restaurant)
     redirect_to dining_table_path(@order.dining_table)
   end
 

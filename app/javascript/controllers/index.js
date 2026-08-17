@@ -4,23 +4,23 @@
 
 import { application } from "./application"
 
-import DismissController from "./dismiss_controller"
-application.register("dismiss", DismissController)
-
-import ValidateController from "./validate_controller"
-application.register("validate", ValidateController)
-
-import ConfirmController from "./confirm_controller"
-application.register("confirm", ConfirmController)
+import CashCloseController from "./cash_close_controller"
+application.register("cash-close", CashCloseController)
 
 import ComboboxController from "./combobox_controller"
 application.register("combobox", ComboboxController)
 
-import PosCartController from "./pos_cart_controller"
-application.register("pos-cart", PosCartController)
+import ConfirmController from "./confirm_controller"
+application.register("confirm", ConfirmController)
 
-import CashCloseController from "./cash_close_controller"
-application.register("cash-close", CashCloseController)
+import DismissController from "./dismiss_controller"
+application.register("dismiss", DismissController)
+
+import HistoryBackController from "./history_back_controller"
+application.register("history-back", HistoryBackController)
+
+import KitchenChimeController from "./kitchen_chime_controller"
+application.register("kitchen-chime", KitchenChimeController)
 
 import MenuSearchController from "./menu_search_controller"
 application.register("menu-search", MenuSearchController)
@@ -28,5 +28,14 @@ application.register("menu-search", MenuSearchController)
 import MobileNavController from "./mobile_nav_controller"
 application.register("mobile-nav", MobileNavController)
 
+import PosCartController from "./pos_cart_controller"
+application.register("pos-cart", PosCartController)
+
+import PrintPromptController from "./print_prompt_controller"
+application.register("print-prompt", PrintPromptController)
+
 import SlugSuggestController from "./slug_suggest_controller"
 application.register("slug-suggest", SlugSuggestController)
+
+import ValidateController from "./validate_controller"
+application.register("validate", ValidateController)

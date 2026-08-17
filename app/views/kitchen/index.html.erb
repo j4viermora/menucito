@@ -1,33 +1,9 @@
-<h1 class="nb-heading text-2xl mb-6">Cocina</h1>
+<%= turbo_stream_from current_restaurant, :kitchen %>
+<div data-controller="kitchen-chime"><%= render "kitchen/chime" %></div>
 
-<% if @order_items.empty? %>
-  <div class="nb-box p-8 text-center text-ink/60">No hay platos pendientes. 🎉</div>
-<% else %>
-  <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-    <% @order_items.each do |order, items| %>
-      <div class="nb-box p-4">
-        <div class="flex items-center justify-between mb-3">
-          <p class="font-display font-bold">
-            <%= order.dining_table ? "Mesa #{order.dining_table.code}" : "Mostrador" %>
-          </p>
-          <span class="text-xs text-ink/60 font-mono">#<%= order.order_number %></span>
-        </div>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="nb-heading text-2xl">Cocina</h1>
+  <%= link_to "Historial", history_kitchen_path, class: "btn-secondary text-xs" %>
+</div>
 
-        <div class="divide-y-2 divide-ink">
-          <% items.each do |item| %>
-            <div class="flex items-center justify-between py-2">
-              <div>
-                <p class="font-bold text-sm"><%= item.quantity %>x <%= item.menu_item.name %></p>
-                <% if item.notes.present? %><p class="text-xs text-ink/60"><%= item.notes %></p><% end %>
-                <span class="badge <%= item.printed? ? 'badge-yellow' : 'badge-outline' %> text-[10px] mt-1">
-                  <%= item.printed? ? "En cocina" : "Por enviar" %>
-                </span>
-              </div>
-              <%= button_to "Servido", serve_kitchen_order_item_path(item), method: :post, class: "btn-secondary text-xs !px-3 !py-2" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-<% end %>
+<%= render "kitchen/board", order_items: @order_items %>

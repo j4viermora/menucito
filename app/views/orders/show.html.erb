@@ -1,4 +1,10 @@
-<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+<%= render "shared/back_button", fallback: (@order.dining_table ? dining_tables_path : pos_path) %>
+
+<% if params[:prompt_print] && current_user.can_sell_at_counter? %>
+  <div data-controller="print-prompt" data-print-prompt-bill-url-value="<%= bill_order_path(@order) %>"></div>
+<% end %>
+
+<div class="flex items-start justify-between mb-6 mt-3 flex-wrap gap-3">
   <div>
     <h1 class="nb-heading text-2xl">Pedido #<%= @order.order_number %></h1>
     <p class="text-sm text-ink/60">

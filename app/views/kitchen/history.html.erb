@@ -1,0 +1,22 @@
+<%= render "shared/back_button", fallback: kitchen_path %>
+
+<h1 class="nb-heading text-2xl mb-6 mt-3">Historial de comandas</h1>
+
+<% if @order_items.empty? %>
+  <div class="nb-box p-8 text-center text-ink/60">Todavía no se ha servido ningún plato.</div>
+<% else %>
+  <div class="nb-box divide-y-2 divide-ink">
+    <% @order_items.each do |item| %>
+      <div class="flex items-center justify-between p-4 flex-wrap gap-2">
+        <div>
+          <p class="font-bold text-sm"><%= item.quantity %>x <%= item.menu_item.name %></p>
+          <p class="text-xs text-ink/60">
+            <%= item.order.dining_table ? "Mesa #{item.order.dining_table.code}" : "Mostrador" %> ·
+            Pedido #<%= item.order.order_number %>
+          </p>
+        </div>
+        <span class="font-mono text-xs text-ink/60"><%= item.served_at&.strftime("%d/%m/%Y %H:%M") %></span>
+      </div>
+    <% end %>
+  </div>
+<% end %>

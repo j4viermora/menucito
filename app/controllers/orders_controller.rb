@@ -4,7 +4,7 @@ class OrdersController < AuthenticatedController
   before_action(only: :pay) { require_permission!(:can_collect_payment?) }
   before_action :set_order
 
-  layout false, only: [ :comanda, :bill ]
+  layout(-> { false if action_name.in?(%w[comanda bill]) })
 
   def show
   end
@@ -12,6 +12,7 @@ class OrdersController < AuthenticatedController
   def update
     if @order.update(order_params)
       @order.recalculate_totals!
+      KitchenBroadcast.sync(current_restaurant)
       redirect_to (@order.dining_table ? dining_table_path(@order.dining_table) : order_path(@order)), notice: "Pedido actualizado."
     else
       render :show, status: :unprocessable_entity
@@ -39,6 +40,8 @@ class OrdersController < AuthenticatedController
 
     @order.order_items.where(id: pending_ids).update_all(status: :printed)
     @order.update!(status: :sent_to_kitchen) if @order.open?
+    KitchenBroadcast.sync(current_restaurant)
+    KitchenBroadcast.chime(current_restaurant)
     redirect_to (@order.dining_table ? dining_table_path(@order.dining_table) : @order), notice: "Pedido enviado a cocina."
   end
 
@@ -53,12 +56,14 @@ class OrdersController < AuthenticatedController
       @order.update!(status: :paid)
       @order.dining_table&.update!(status: :free)
     end
-    redirect_to @order, notice: "Pedido pagado."
+    KitchenBroadcast.sync(current_restaurant)
+    redirect_to order_path(@order, prompt_print: true), notice: "Pedido pagado."
   end
 
   def cancel
     @order.update!(status: :cancelled)
     @order.dining_table&.update(status: :free)
+    KitchenBroadcast.sync(current_restaurant)
     redirect_to dining_tables_path, notice: "Pedido cancelado."
   end
 
