@@ -8,7 +8,7 @@ Menucito is a multitenant Rails 8 app for restaurant management: QR-code public 
 
 ## Commands
 
-Start the app (Rails server + JS watch + CSS watch, via Procfile.dev):
+Start the app (Rails server + Tailwind watch, via Procfile.dev):
 ```
 bin/dev
 ```
@@ -24,10 +24,9 @@ bin/brakeman --no-pager
 bin/bundler-audit
 ```
 
-Build JS/CSS manually (normally handled by `bin/dev` watchers):
+Build CSS manually (normally handled by the `bin/dev` watcher). There is no Node/npm/yarn in this project — JS is served via importmaps and Tailwind runs as a standalone binary:
 ```
-yarn build
-yarn build:css
+bin/rails tailwindcss:build
 ```
 
 DB setup:
@@ -84,8 +83,8 @@ All monetary values must use the `money-rails` gem (`Money`/`Monetize`), not pla
 
 ## Frontend
 
-Hotwire stack: Turbo + Stimulus, esbuild for JS bundling, Tailwind v4 (CSS-first config via `@theme` in `app/assets/stylesheets/application.tailwind.css`, no `tailwind.config.js`). Custom theme tokens (`--color-ink`, `--color-paper`, `--color-yellow`, etc.) implement a neobrutalist design system — thick borders, hard drop shadows, high-contrast accent colors. `docs/MOBILE_DESIGN.md` documents the mobile-specific rules for this system (touch target sizes, shadow scaling, safe-area padding) if you're touching responsive/mobile UI.
+Hotwire stack: Turbo + Stimulus via `importmap-rails` (pins in `config/importmap.rb`, no bundler, no Node), Tailwind v4 via `tailwindcss-rails` (CSS-first config via `@theme` in `app/assets/tailwind/application.css`, no `tailwind.config.js`). Custom theme tokens (`--color-ink`, `--color-paper`, `--color-yellow`, etc.) implement a neobrutalist design system — thick borders, hard drop shadows, high-contrast accent colors. `docs/MOBILE_DESIGN.md` documents the mobile-specific rules for this system (touch target sizes, shadow scaling, safe-area padding) if you're touching responsive/mobile UI.
 
-Stimulus controllers live in `app/javascript/controllers/` and are registered in `app/javascript/controllers/index.js`.
+Stimulus controllers live in `app/javascript/controllers/` and are eager-loaded automatically by `app/javascript/controllers/index.js` (any `*_controller.js` file is picked up — no manual registration). To add a third-party JS package, use `bin/importmap pin <package>`.
 
 Two distinct layouts beyond `application.html.erb`: `app.html.erb` (authenticated staff UI, sidebar nav gated per-role as above) and `public_menu.html.erb` (the customer-facing QR menu, no auth, tenant-scoped only).
